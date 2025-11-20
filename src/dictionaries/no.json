@@ -1,0 +1,33 @@
+{
+  "nav": {
+    "home": "Hjem",
+    "map": "Kart",
+    "trains": "Tog"
+  },
+  "search": {
+    "placeholder": "Søk stasjoner eller tog...",
+    "station": "Stasjon",
+    "train": "Tog"
+  },
+  "station": {
+    "title": "Rutetabell: {station}",
+    "arrivals": "Ankomster",
+    "departures": "Avganger",
+    "track": "Spor",
+    "time": "Tid",
+    "dest_origin": "Destinasjon/Opprinnelse"
+  },
+  "train": {
+    "details": "Tog {type} {number}",
+    "route": "Rute",
+    "composition": "Sammensetning",
+    "speed": "Maks hastighet: {speed} km/t",
+    "length": "Lengde: {length} m",
+    "cancelled": "Kansellert"
+  },
+  "common": {
+    "date": "Dato",
+    "prevDay": "Forrige dag",
+    "nextDay": "Neste dag"
+  }
+}

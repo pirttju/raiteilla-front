@@ -1,0 +1,33 @@
+{
+  "nav": {
+    "home": "Home",
+    "map": "Map",
+    "trains": "Trains"
+  },
+  "search": {
+    "placeholder": "Search for stations or trains...",
+    "station": "Station",
+    "train": "Train"
+  },
+  "station": {
+    "title": "Schedule for {station}",
+    "arrivals": "Arrivals",
+    "departures": "Departures",
+    "track": "Track",
+    "time": "Time",
+    "dest_origin": "Destination/Origin"
+  },
+  "train": {
+    "details": "Train {type} {number}",
+    "route": "Route",
+    "composition": "Composition",
+    "speed": "Max Speed: {speed} km/h",
+    "length": "Length: {length} m",
+    "cancelled": "Cancelled"
+  },
+  "common": {
+    "date": "Date",
+    "prevDay": "Previous day",
+    "nextDay": "Next day"
+  }
+}

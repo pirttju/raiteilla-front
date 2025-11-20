@@ -1,0 +1,33 @@
+{
+  "nav": {
+    "home": "Koti",
+    "map": "Kartta",
+    "trains": "Junat"
+  },
+  "search": {
+    "placeholder": "Hae asemia tai junia...",
+    "station": "Asema",
+    "train": "Juna"
+  },
+  "station": {
+    "title": "Aikataulut: {station}",
+    "arrivals": "Saapuvat",
+    "departures": "Lähtevät",
+    "track": "Raide",
+    "time": "Aika",
+    "dest_origin": "Määränpää/Lähtö"
+  },
+  "train": {
+    "details": "Juna {type} {number}",
+    "route": "Reitti",
+    "composition": "Kokoonpano",
+    "speed": "Max nopeus: {speed} km/h",
+    "length": "Pituus: {length} m",
+    "cancelled": "Peruttu"
+  },
+  "common": {
+    "date": "Päivämäärä",
+    "prevDay": "Edellinen päivä",
+    "nextDay": "Seuraava päivä"
+  }
+}

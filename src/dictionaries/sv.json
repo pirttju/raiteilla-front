@@ -1,0 +1,33 @@
+{
+  "nav": {
+    "home": "Hem",
+    "map": "Karta",
+    "trains": "Tåg"
+  },
+  "search": {
+    "placeholder": "Sök stationer eller tåg...",
+    "station": "Station",
+    "train": "Tåg"
+  },
+  "station": {
+    "title": "Tidtabell: {station}",
+    "arrivals": "Ankomster",
+    "departures": "Avgångar",
+    "track": "Spår",
+    "time": "Tid",
+    "dest_origin": "Destination/Ursprung"
+  },
+  "train": {
+    "details": "Tåg {type} {number}",
+    "route": "Rutt",
+    "composition": "Sammansättning",
+    "speed": "Max hastighet: {speed} km/h",
+    "length": "Längd: {length} m",
+    "cancelled": "Inställt"
+  },
+  "common": {
+    "date": "Datum",
+    "prevDay": "Föregående dag",
+    "nextDay": "Nästa dag"
+  }
+}
