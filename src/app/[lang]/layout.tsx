@@ -1,6 +1,7 @@
 import { getDictionary } from '@/lib/dictionary';
 import Header from '@/components/Header';
 import '../globals.css';
+import 'maplibre-gl/dist/maplibre-gl.css';
 
 export const metadata = {
   title: 'Raiteilla',
@@ -9,11 +10,12 @@ export const metadata = {
 
 export default async function RootLayout({
   children,
-  params: { lang },
+  params,
 }: {
   children: React.ReactNode;
-  params: { lang: string };
+  params: Promise<{ lang: string }>; // Params is a Promise now
 }) {
+  const { lang } = await params; // Await the params
   const dict = await getDictionary(lang);
 
   return (

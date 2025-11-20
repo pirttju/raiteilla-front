@@ -4,15 +4,17 @@ import { getDictionary } from '@/lib/dictionary';
 import { getNavDates, formatDateDisplay } from '@/lib/utils';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     lang: string;
     country: string;
     date: string;
-  }
+  }>;
 }
 
 export default async function TrainsListPage({ params }: PageProps) {
-  const { lang, country, date } = params;
+  // 1. Await params
+  const { lang, country, date } = await params;
+  
   const dict = await getDictionary(lang);
   const trains = await getAllTrains(country as any, date);
   const { prev, next } = getNavDates(date);
@@ -79,13 +81,6 @@ export default async function TrainsListPage({ params }: PageProps) {
                   </td>
                 </tr>
               ))}
-              {trains.length === 0 && (
-                <tr>
-                  <td colSpan={3} className="p-8 text-center text-gray-500">
-                    No trains found for this date.
-                  </td>
-                </tr>
-              )}
             </tbody>
           </table>
         </div>

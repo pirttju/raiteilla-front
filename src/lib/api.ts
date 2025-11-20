@@ -34,10 +34,11 @@ export async function getTrainDetails(country: CountryCode, date: string, number
   return json.success && json.data.length > 0 ? json.data[0] : null;
 }
 
-export async function getTrainComposition(country: CountryCode, date: string, number: string): Promise<TrainComposition | null> {
+export async function getTrainComposition(country: CountryCode, date: string, number: string): Promise<TrainComposition[]> {
   const res = await fetch(`${BASE_URL}/allocations/${country}/${date}/${number}`, { cache: 'no-store' });
   const json = await res.json();
-  return json.success && json.data.length > 0 ? json.data[0] : null;
+  // Return the full array of allocations (legs)
+  return json.success ? json.data : [];
 }
 
 export async function getStationSchedule(country: CountryCode, station: string, date: string): Promise<Train[]> {

@@ -2,9 +2,14 @@ import { getStations } from '@/lib/api';
 import SearchBox from '@/components/SearchBox';
 import { getDictionary } from '@/lib/dictionary';
 
-export default async function Home({ params: { lang } }: { params: { lang: string } }) {
+export default async function Home({ 
+  params 
+}: { 
+  params: Promise<{ lang: string }> 
+}) {
+  const { lang } = await params; // Await here
   const dict = await getDictionary(lang);
-  // Fetch stations for all supported countries
+  
   const [fi, se, no] = await Promise.all([getStations('fi'), getStations('se'), getStations('no')]);
   const allStations = [...fi, ...se, ...no];
 

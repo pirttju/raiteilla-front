@@ -2,25 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Include MapLibre CSS manually if node_modules import fails, 
-   though the component import is preferred. This is a fallback/reset. */
+/* MapLibre CSS fallback */
 @import 'maplibre-gl/dist/maplibre-gl.css';
 
-body {
-  @apply bg-gray-50 text-slate-900;
-}
-
-/* Custom scrollbar for composition view */
+/* Custom scrollbar (optional, standard CSS is fine here) */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  @apply bg-gray-100;
+  background: #f3f4f6; /* converted from @apply bg-gray-100 */
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-gray-300 rounded;
+  background: #d1d5db; /* converted from @apply bg-gray-300 */
+  border-radius: 0.25rem;
 }
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-400;
+  background: #9ca3af; /* converted from @apply bg-gray-400 */
 }

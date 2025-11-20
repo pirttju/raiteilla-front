@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getFlag } from '@/lib/api';
-import type { Station, Train } from '@/types/api';
+import type { Station } from '@/types/api';
 
 interface SearchBoxProps {
   lang: string;
@@ -14,9 +14,6 @@ export default function SearchBox({ lang, initialStations }: SearchBoxProps) {
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const router = useRouter();
 
-  // In a real app, you might fetch trains dynamically. 
-  // Here we mock a train search or you'd fetch "today's trains" to filter client side.
-  
   useEffect(() => {
     if (query.length < 2) {
       setSuggestions([]);
@@ -34,15 +31,14 @@ export default function SearchBox({ lang, initialStations }: SearchBoxProps) {
       .slice(0, 5)
       .map(s => ({ type: 'station', data: s }));
 
-    // Simulate Train search (in reality, fetch API or filter huge list)
-    // For this example, if query looks like a number, we show a generic link
+    // Simulate Train search
     const trainResults = [];
     if (!isNaN(Number(query))) {
         trainResults.push({
             type: 'train',
             data: {
                 train_number: parseInt(query),
-                feed_id: 'fi', // Defaulting to FI for demo
+                feed_id: 'fi', 
                 train_type: 'Train' 
             }
         });
@@ -53,10 +49,14 @@ export default function SearchBox({ lang, initialStations }: SearchBoxProps) {
 
   const handleSelect = (item: any) => {
     const date = new Date().toISOString().split('T')[0];
+    
     if (item.type === 'station') {
-      router.push(`/${lang}/station/${item.data.feed_id}/${item.data.station}/${date}`);
+      // Check if feed_id exists, fallback to 'fi' if missing
+      const feed = item.data.feed_id || 'fi';
+      router.push(`/${lang}/station/${feed}/${item.data.station}/${date}`);
     } else {
-      router.push(`/${lang}/train/${item.data.feed_id}/${date}/${item.data.data.train_number}`);
+      // FIX: use item.data.train_number (removed extra .data)
+      router.push(`/${lang}/train/${item.data.feed_id}/${date}/${item.data.train_number}`);
     }
   };
 

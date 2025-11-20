@@ -44,6 +44,8 @@ export interface TrainStop {
 }
 
 export interface TrainComposition {
+  begin_station_short_code: string;
+  end_station_short_code: string;
   departure_date: string;
   train_number: number;
   total_length: number;
@@ -51,8 +53,9 @@ export interface TrainComposition {
   groups: {
     group_id: number | null;
     vehicles: {
-      vehicle_type: string;
-      vehicle_number: string;
+      vehicle_type: string; // e.g., "locomotive", "wagon"
+      vehicle_number: string; // e.g., "Sr2 3201"
+      sales_number: string | null; // e.g., "5" (The number printed on the door)
       location: number;
     }[];
   }[];
