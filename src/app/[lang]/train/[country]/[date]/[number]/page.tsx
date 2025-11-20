@@ -1,7 +1,6 @@
 import { getTrainDetails, getTrainComposition } from '@/lib/api';
 import { getDictionary } from '@/lib/dictionary';
 import Image from 'next/image';
-import { Ban } from 'lucide-react';
 
 interface PageProps {
   params: Promise<{
@@ -21,16 +20,13 @@ export default async function TrainPage({ params }: PageProps) {
 
   if (!train) return <div className="p-8">Train not found</div>;
 
-  // Create a lookup map: Station Code -> Station Name
   const stationNameMap = new Map<string, string>();
   train.schedule.forEach((stop) => {
     stationNameMap.set(stop.station, stop.name);
   });
 
-  // Helper to get name safely
   const getStationName = (code: string) => stationNameMap.get(code) || code;
 
-  // Determine start time
   const firstStop = train.schedule[0];
   const startTimeStr = firstStop.actual_departure || firstStop.departure;
   const startTime = startTimeStr 
@@ -38,7 +34,7 @@ export default async function TrainPage({ params }: PageProps) {
     : '';
 
   return (
-    <div className="container mx-auto p-4 max-w-5xl">
+    <div className="w-full p-4">
       {/* Header */}
       <div className="bg-white rounded shadow p-6 mb-6 border-l-4 border-blue-600">
         <h1 className="text-3xl font-bold mb-2 text-gray-900">
@@ -61,11 +57,8 @@ export default async function TrainPage({ params }: PageProps) {
 
           <div className="space-y-12">
             {compositions.map((comp, idx) => {
-              const vehicles = comp.groups.flatMap(g => g.vehicles);
-              const hasLocomotive = vehicles.some(v => v.vehicle_type === 'locomotive');
-              
-              // Reverse for visualization (Head on the RIGHT)
-              const reversedVehicles = [...vehicles].reverse();
+              // Reverse Groups (Lead group on Right)
+              const reversedGroups = [...comp.groups].reverse();
 
               return (
                 <div key={idx} className="relative">
@@ -82,86 +75,122 @@ export default async function TrainPage({ params }: PageProps) {
                   {/* Train Visualization */}
                   <div className="overflow-x-auto pb-4">
                     <div className="flex items-start min-w-max px-2 justify-start py-2">
-                      {reversedVehicles.map((v, vIdx) => {
-                        const isLocoType = v.vehicle_type === 'locomotive';
-                        let iconSrc = '/wagon.svg';
-
-                        if (hasLocomotive) {
-                          if (isLocoType) iconSrc = '/locomotive.svg';
-                        } else {
-                          if (reversedVehicles.length === 1) {
-                            iconSrc = '/wagon_round.svg';
-                          } else if (vIdx === reversedVehicles.length - 1) {
-                            iconSrc = '/wagon_front.svg';
-                          } else if (vIdx === 0) {
-                            iconSrc = '/wagon_rear.svg';
-                          }
-                        }
-
-                        // Check for No-Entry condition (990-999)
-                        const salesNumInt = parseInt(v.sales_number || '0', 10);
-                        const isNoEntry = salesNumInt >= 990 && salesNumInt <= 999;
+                      
+                      {/* Iterate Groups */}
+                      {reversedGroups.map((group, gIdx) => {
+                        const vehicles = group.vehicles;
+                        const hasLocomotive = vehicles.some(v => v.vehicle_type === 'locomotive');
+                        
+                        // Reverse vehicles within this group (Head of group on Right)
+                        const reversedVehicles = [...vehicles].reverse();
 
                         return (
+                          // GROUP WRAPPER: Contains [Vehicles Row] and [Group ID]
                           <div 
-                            key={vIdx} 
-                            className="flex flex-col items-center -ml-1 first:ml-0 shrink-0 group z-0 hover:z-10 transition-transform hover:scale-105"
+                            key={gIdx} 
+                            className="flex flex-col items-center mx-1 first:ml-0 shrink-0"
                           >
-                            {/* Icon Container */}
-                            <div 
-                              className="relative w-16 h-8"
-                              style={{ position: 'relative', width: '64px', height: '32px' }}
-                            >
-                              <Image 
-                                src={iconSrc} 
-                                alt={v.vehicle_type} 
-                                width={64}
-                                height={32}
-                                priority
-                                className="object-contain z-10" 
-                                style={{ width: '64px', height: '32px' }}
-                              />
+                            {/* VEHICLES ROW */}
+                            <div className="flex items-start">
+                              {reversedVehicles.map((v, vIdx) => {
+                                const isLocoType = v.vehicle_type === 'locomotive';
+                                const isEdo = v.vehicle_number === 'Edo';
+                                
+                                let iconSrc = '/wagon.svg';
 
-                              {/* Overlay: Sales Number OR No-Entry Icon */}
-                              {v.sales_number && (
-                                <div 
-                                  className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none"
-                                  style={{ 
-                                    position: 'absolute', 
-                                    top: 0, 
-                                    left: 0, 
-                                    width: '100%', 
-                                    height: '100%',
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center'
-                                  }}
-                                >
-                                  {isNoEntry ? (
-                                    <div className="bg-white/90 rounded-full p-0.5 shadow-sm flex items-center justify-center">
-                                      {/* Added explicit color prop to force red */}
-                                      <Ban 
-                                        className="w-4 h-4" 
-                                        color="#dc2626" 
-                                        strokeWidth={3} 
-                                      />
-                                    </div>
-                                  ) : (
-                                    <span 
-                                      className="bg-[#fef08a] text-gray-900 px-1.5 py-0.5 rounded shadow-sm border border-gray-300 font-bold text-xs leading-none"
-                                      style={{ backgroundColor: '#fef08a' }}
+                                if (hasLocomotive) {
+                                  if (isLocoType) {
+                                    iconSrc = '/locomotive.svg';
+                                  } else if (isEdo) {
+                                    if (vIdx === reversedVehicles.length - 1) iconSrc = '/wagon_front.svg';
+                                    else if (vIdx === 0) iconSrc = '/wagon_rear.svg';
+                                  }
+                                } else {
+                                  if (reversedVehicles.length === 1) {
+                                    iconSrc = '/wagon_round.svg';
+                                  } else if (vIdx === reversedVehicles.length - 1) {
+                                    iconSrc = '/wagon_front.svg';
+                                  } else if (vIdx === 0) {
+                                    iconSrc = '/wagon_rear.svg';
+                                  }
+                                }
+
+                                // No Entry / Closed Logic
+                                const salesNumInt = parseInt(v.sales_number || '0', 10);
+                                const isNoEntryRange = v.sales_number && salesNumInt >= 990 && salesNumInt <= 999;
+                                const isClosed = (v as any).sales_state === "closed"; 
+                                const showNoEntry = isNoEntryRange || isClosed;
+                                const showOverlay = v.sales_number || showNoEntry;
+
+                                return (
+                                  <div 
+                                    key={`${gIdx}-${vIdx}`} 
+                                    className="flex flex-col items-center mx-0 shrink-0 group z-0 hover:z-10 transition-transform hover:scale-105"
+                                  >
+                                    <div 
+                                      className="relative"
+                                      style={{ position: 'relative', width: '64px', height: '32px' }}
                                     >
-                                      {v.sales_number}
+                                      <Image 
+                                        src={iconSrc} 
+                                        alt={v.vehicle_type} 
+                                        width={64}
+                                        height={32}
+                                        priority
+                                        className="object-contain z-10" 
+                                        style={{ width: '64px', height: '32px', objectFit: 'contain' }}
+                                      />
+
+                                      {/* Overlay */}
+                                      {showOverlay && (
+                                        <div 
+                                          className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none"
+                                          style={{ 
+                                            position: 'absolute', 
+                                            top: 0, left: 0, width: '100%', height: '100%',
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center'
+                                          }}
+                                        >
+                                          {showNoEntry ? (
+                                            <div className="bg-white/90 rounded-full p-0.5 shadow-sm flex items-center justify-center">
+                                              <svg 
+                                                xmlns="http://www.w3.org/2000/svg" 
+                                                width="16" height="16" viewBox="0 0 24 24" 
+                                                fill="none" stroke="#dc2626" strokeWidth="3" 
+                                                strokeLinecap="round" strokeLinejoin="round"
+                                              >
+                                                <circle cx="12" cy="12" r="10"/>
+                                                <path d="m4.9 4.9 14.2 14.2"/>
+                                              </svg>
+                                            </div>
+                                          ) : (
+                                            <span 
+                                              className="bg-[#fef08a] text-gray-900 px-1.5 py-0.5 rounded shadow-sm border border-gray-300 font-bold text-xs leading-none"
+                                              style={{ backgroundColor: '#fef08a' }}
+                                            >
+                                              {v.sales_number}
+                                            </span>
+                                          )}
+                                        </div>
+                                      )}
+                                    </div>
+
+                                    <span className="text-[10px] text-gray-600 font-mono mt-1 leading-none">
+                                      {v.vehicle_number}
                                     </span>
-                                  )}
-                                </div>
-                              )}
+                                  </div>
+                                );
+                              })}
                             </div>
 
-                            {/* Technical Number */}
-                            <span className="text-[10px] text-gray-600 font-mono mt-1 leading-none">
-                              {v.vehicle_number}
-                            </span>
+                            {/* GROUP ID (Below the vehicles in the group) */}
+                            {group.group_id && (
+                              <div className="mt-2 pt-1 border-t border-gray-300 w-full text-center px-1">
+                                <span className="text-[10px] text-gray-500 font-bold font-mono whitespace-nowrap block">
+                                  {group.group_id}
+                                </span>
+                              </div>
+                            )}
                           </div>
                         );
                       })}
@@ -192,7 +221,6 @@ export default async function TrainPage({ params }: PageProps) {
             <tbody className="divide-y divide-gray-100">
               {train.schedule.map((stop, idx) => {
                 const isPast = stop.actual_departure ? new Date(stop.actual_departure) < new Date() : false;
-                
                 return (
                   <tr key={idx} className={`hover:bg-blue-50 transition ${isPast ? 'text-gray-400' : 'text-gray-900'}`}>
                     <td className="p-3 font-medium">
@@ -205,10 +233,7 @@ export default async function TrainPage({ params }: PageProps) {
                           ? <span className={stop.arrival && stop.actual_arrival !== stop.arrival ? 'text-red-600 font-bold' : ''}>
                               {new Date(stop.actual_arrival).toLocaleTimeString(lang, {hour:'2-digit', minute:'2-digit'})}
                             </span>
-                          : stop.arrival 
-                            ? new Date(stop.arrival).toLocaleTimeString(lang, {hour:'2-digit', minute:'2-digit'}) 
-                            : <span className="text-gray-300">-</span>
-                        }
+                          : stop.arrival ? new Date(stop.arrival).toLocaleTimeString(lang, {hour:'2-digit', minute:'2-digit'}) : '-'}
                       </div>
                     </td>
                     <td className="p-3 text-right font-mono">
@@ -217,15 +242,10 @@ export default async function TrainPage({ params }: PageProps) {
                           ? <span className={stop.departure && stop.actual_departure !== stop.departure ? 'text-red-600 font-bold' : ''}>
                               {new Date(stop.actual_departure).toLocaleTimeString(lang, {hour:'2-digit', minute:'2-digit'})}
                             </span>
-                          : stop.departure 
-                            ? new Date(stop.departure).toLocaleTimeString(lang, {hour:'2-digit', minute:'2-digit'}) 
-                            : <span className="text-gray-300">-</span>
-                        }
+                          : stop.departure ? new Date(stop.departure).toLocaleTimeString(lang, {hour:'2-digit', minute:'2-digit'}) : '-'}
                       </div>
                     </td>
-                    <td className="p-3 text-center font-bold text-blue-800">
-                      {stop.platform || '-'}
-                    </td>
+                    <td className="p-3 text-center font-bold text-blue-800">{stop.platform || '-'}</td>
                   </tr>
                 );
               })}

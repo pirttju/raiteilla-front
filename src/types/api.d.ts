@@ -51,11 +51,12 @@ export interface TrainComposition {
   total_length: number;
   maximum_speed: number;
   groups: {
-    group_id: number | null;
+    group_id: string | number | null; 
     vehicles: {
       vehicle_type: string; // e.g., "locomotive", "wagon"
       vehicle_number: string; // e.g., "Sr2 3201"
       sales_number: string | null; // e.g., "5" (The number printed on the door)
+      sales_state: string | null; // "open" or "closed" -- Norway specific property
       location: number;
     }[];
   }[];
