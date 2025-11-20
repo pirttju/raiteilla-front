@@ -1,22 +1,27 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-/* MapLibre CSS fallback */
+@theme {
+  /* Define custom colors here. 
+     Tailwind v4 automatically creates utilities like bg-vr-green, text-vr-green */
+  --color-vr-green: #56a834;
+  --color-vr-dark: #1a1a1a;
+}
+
+/* MapLibre styles */
 @import 'maplibre-gl/dist/maplibre-gl.css';
 
-/* Custom scrollbar (optional, standard CSS is fine here) */
+/* Optional: Scrollbar styles */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #f3f4f6; /* converted from @apply bg-gray-100 */
+  background: #f3f4f6;
 }
 ::-webkit-scrollbar-thumb {
-  background: #d1d5db; /* converted from @apply bg-gray-300 */
-  border-radius: 0.25rem;
+  background: #d1d5db;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af; /* converted from @apply bg-gray-400 */
+  background: #9ca3af;
 }
