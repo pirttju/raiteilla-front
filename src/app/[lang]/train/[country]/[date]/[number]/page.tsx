@@ -1,6 +1,7 @@
 import { getTrainDetails, getTrainComposition } from '@/lib/api';
 import { getDictionary } from '@/lib/dictionary';
 import Image from 'next/image';
+import lineColoursData from '@/lib/line_colours.json'; // Import the JSON
 
 interface PageProps {
   params: Promise<{
@@ -33,16 +34,38 @@ export default async function TrainPage({ params }: PageProps) {
     ? new Date(startTimeStr).toLocaleTimeString(lang, {hour:'2-digit', minute:'2-digit'}) 
     : '';
 
+  // --- LINE COLOR LOGIC ---
+  const lineColors = lineColoursData as Record<string, Record<string, string>>;
+  let lineBgColor = '#3b82f6'; // Default fallback color (blue-500) if not found
+  
+  if (train.line_no && lineColors[country] && lineColors[country][train.line_no]) {
+    lineBgColor = `#${lineColors[country][train.line_no]}`;
+  }
+
   return (
     <div className="w-full p-4">
       {/* Header */}
       <div className="bg-white rounded shadow p-6 mb-6 border-l-4 border-blue-600">
         <h1 className="text-3xl font-bold mb-2 text-gray-900">
-          {startTime} {train.origin_name} &rarr; {train.destination_name}
+          {startTime} {train.origin_name}&ndash;{train.destination_name}
         </h1>
-        <div className="text-xl font-semibold text-blue-800 mb-1">
-          {train.train_type} {train.train_number}
+        
+        <div className="text-xl font-semibold text-blue-800 mb-1 flex items-center gap-2">
+          {/* Render Line Number with Color Box if it exists */}
+          {train.line_no && (
+            <span 
+              className="inline-flex items-center justify-center px-2 py-0.5 rounded text-white font-bold shadow-sm text-lg min-w-[40px]"
+              style={{ backgroundColor: lineBgColor }}
+            >
+              {train.line_no}
+            </span>
+          )}
+          
+          <span>
+            {train.train_type} {train.train_number}
+          </span>
         </div>
+        
         <div className="text-sm text-gray-500 tracking-wide">
           {train.company} • {new Date(date).toLocaleDateString(lang)}
         </div>
@@ -52,12 +75,11 @@ export default async function TrainPage({ params }: PageProps) {
       {compositions && compositions.length > 0 && (
         <div className="bg-white rounded shadow p-6 mb-6">
           <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
-            <span>🚂</span> {dict.train.composition}
+            <span>🚆</span> {dict.train.composition}
           </h2>
 
           <div className="space-y-12">
             {compositions.map((comp, idx) => {
-              // Reverse Groups (Lead group on Right)
               const reversedGroups = [...comp.groups].reverse();
 
               return (
@@ -68,7 +90,8 @@ export default async function TrainPage({ params }: PageProps) {
                       {getStationName(comp.begin_station_short_code)} &rarr; {getStationName(comp.end_station_short_code)}
                     </h3>
                     <div className="text-xs text-gray-500 font-mono">
-                      {comp.maximum_speed} km/h • {comp.total_length}m
+                      {comp.maximum_speed > 0 ? `${comp.maximum_speed} km/h` : ''} 
+                      {comp.total_length > 0 ? `${comp.total_length} m` : ''}
                     </div>
                   </div>
 
@@ -80,12 +103,9 @@ export default async function TrainPage({ params }: PageProps) {
                       {reversedGroups.map((group, gIdx) => {
                         const vehicles = group.vehicles;
                         const hasLocomotive = vehicles.some(v => v.vehicle_type === 'locomotive');
-                        
-                        // Reverse vehicles within this group (Head of group on Right)
                         const reversedVehicles = [...vehicles].reverse();
 
                         return (
-                          // GROUP WRAPPER: Contains [Vehicles Row] and [Group ID]
                           <div 
                             key={gIdx} 
                             className="flex flex-col items-center mx-1 first:ml-0 shrink-0"
@@ -183,7 +203,7 @@ export default async function TrainPage({ params }: PageProps) {
                               })}
                             </div>
 
-                            {/* GROUP ID (Below the vehicles in the group) */}
+                            {/* GROUP ID */}
                             {group.group_id && (
                               <div className="mt-2 pt-1 border-t border-gray-300 w-full text-center px-1">
                                 <span className="text-[10px] text-gray-500 font-bold font-mono whitespace-nowrap block">
@@ -213,8 +233,10 @@ export default async function TrainPage({ params }: PageProps) {
             <thead className="bg-gray-100 border-b text-gray-600 uppercase text-xs">
               <tr>
                 <th className="p-3">{dict.search.station}</th>
-                <th className="p-3 text-right">{dict.station.arrivals}</th>
-                <th className="p-3 text-right">{dict.station.departures}</th>
+                <th className="p-3 text-right">{dict.station.arrival}</th>
+                <th className="p-3 text-right">{dict.station.actual}</th>
+                <th className="p-3 text-right">{dict.station.departure}</th>
+                <th className="p-3 text-right">{dict.station.actual}</th>
                 <th className="p-3 text-center">{dict.station.track}</th>
               </tr>
             </thead>
@@ -222,28 +244,32 @@ export default async function TrainPage({ params }: PageProps) {
               {train.schedule.map((stop, idx) => {
                 const isPast = stop.actual_departure ? new Date(stop.actual_departure) < new Date() : false;
                 return (
-                  <tr key={idx} className={`hover:bg-blue-50 transition ${isPast ? 'text-gray-400' : 'text-gray-900'}`}>
+                  <tr key={idx} className={`hover:bg-blue-50 transition ${stop.commercial_stop === false ? 'text-gray-400' : 'text-gray-900'}`}>
                     <td className="p-3 font-medium">
                       {stop.name}
-                      {stop.commercial_stop === false && <span className="ml-2 text-xs text-gray-400 italic">(Tech stop)</span>}
                     </td>
                     <td className="p-3 text-right font-mono">
                       <div className={stop.cancelled_arrival ? 'line-through text-red-500' : ''}>
-                        {stop.actual_arrival 
-                          ? <span className={stop.arrival && stop.actual_arrival !== stop.arrival ? 'text-red-600 font-bold' : ''}>
-                              {new Date(stop.actual_arrival).toLocaleTimeString(lang, {hour:'2-digit', minute:'2-digit'})}
-                            </span>
-                          : stop.arrival ? new Date(stop.arrival).toLocaleTimeString(lang, {hour:'2-digit', minute:'2-digit'}) : '-'}
+                        {stop.arrival ? new Date(stop.arrival).toLocaleTimeString(lang, {hour:'2-digit', minute:'2-digit'}) : '-'}
                       </div>
                     </td>
                     <td className="p-3 text-right font-mono">
+                      {stop.actual_arrival 
+                          ? <span className={stop.arrival && stop.actual_arrival !== stop.arrival ? 'text-red-600 font-bold' : ''}>
+                              {new Date(stop.actual_arrival).toLocaleTimeString(lang, {hour:'2-digit', minute:'2-digit'})}
+                            </span>
+                          : '-'}
+                    </td>
+                    <td className="p-3 text-right font-mono">
                        <div className={stop.cancelled_departure ? 'line-through text-red-500' : ''}>
-                        {stop.actual_departure 
+                        {stop.departure ? new Date(stop.departure).toLocaleTimeString(lang, {hour:'2-digit', minute:'2-digit'}) : '-'}
+                      </div>
+                    </td>
+                    <td className="p-3 text-right font-mono">
+                      {stop.actual_departure 
                           ? <span className={stop.departure && stop.actual_departure !== stop.departure ? 'text-red-600 font-bold' : ''}>
                               {new Date(stop.actual_departure).toLocaleTimeString(lang, {hour:'2-digit', minute:'2-digit'})}
-                            </span>
-                          : stop.departure ? new Date(stop.departure).toLocaleTimeString(lang, {hour:'2-digit', minute:'2-digit'}) : '-'}
-                      </div>
+                            </span> : '-'}
                     </td>
                     <td className="p-3 text-center font-bold text-blue-800">{stop.platform || '-'}</td>
                   </tr>

@@ -7,15 +7,18 @@
   "search": {
     "placeholder": "Hae asemia tai junia...",
     "station": "Asema",
-    "train": "Juna"
+    "train": "Juna",
+    "trainNotFound": "Junaa ei löytynyt."
   },
   "station": {
     "title": "Aikataulut: {station}",
     "arrivals": "Saapuvat",
     "departures": "Lähtevät",
+    "arrival": "Tulo",
+    "departure": "Lähtö",
     "track": "Raide",
     "time": "Aika",
-    "dest_origin": "Määränpää/Lähtö"
+    "actual": "Toteuma"
   },
   "train": {
     "details": "Juna {type} {number}",

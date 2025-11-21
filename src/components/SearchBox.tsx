@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { getFlag } from '@/lib/api';
 import type { Station } from '@/types/api';
+import { getDictionary } from '@/lib/dictionary';
 
 interface SearchBoxProps {
   lang: string;
@@ -65,7 +66,7 @@ export default function SearchBox({ lang, initialStations }: SearchBoxProps) {
       <input
         type="text"
         className="w-full p-3 border rounded shadow text-black"
-        placeholder="Search trains or stations..."
+        placeholder="🔍"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
       />

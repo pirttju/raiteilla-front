@@ -7,15 +7,18 @@
   "search": {
     "placeholder": "Sök stationer eller tåg...",
     "station": "Station",
-    "train": "Tåg"
+    "train": "Tåg",
+    "trainNotFound": "Tåget hittades inte."
   },
   "station": {
     "title": "Tidtabell: {station}",
     "arrivals": "Ankomster",
     "departures": "Avgångar",
+    "arrival": "Ankomst",
+    "departure": "Avgång",
     "track": "Spår",
     "time": "Tid",
-    "dest_origin": "Destination/Ursprung"
+    "actual": "Realtid"
   },
   "train": {
     "details": "Tåg {type} {number}",

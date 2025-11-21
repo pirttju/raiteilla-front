@@ -7,15 +7,18 @@
   "search": {
     "placeholder": "Search for stations or trains...",
     "station": "Station",
-    "train": "Train"
+    "train": "Train",
+    "trainNotFound": "Train not found."
   },
   "station": {
     "title": "Schedule for {station}",
     "arrivals": "Arrivals",
     "departures": "Departures",
+    "arrival": "Arrival",
+    "departure": "Departure",
     "track": "Track",
     "time": "Time",
-    "dest_origin": "Destination/Origin"
+    "actual": "Actual"
   },
   "train": {
     "details": "Train {type} {number}",

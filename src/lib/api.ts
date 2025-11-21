@@ -1,4 +1,4 @@
-import { CountryCode, Station, Train, TrainComposition, TrainStop } from "@/types/api";
+import { CountryCode, Station, StationTrain, Train, TrainComposition, TrainStop } from "@/types/api";
 
 const BASE_URL = "https://raiteilla.fi/api/v1";
 
@@ -41,7 +41,7 @@ export async function getTrainComposition(country: CountryCode, date: string, nu
   return json.success ? json.data : [];
 }
 
-export async function getStationSchedule(country: CountryCode, station: string, date: string): Promise<Train[]> {
+export async function getStationSchedule(country: CountryCode, station: string, date: string): Promise<StationTrain[]> {
   const res = await fetch(`${BASE_URL}/stations/${country}/${station}/${date}`, { cache: 'no-store' });
   const json = await res.json();
   return json.success ? json.data : [];

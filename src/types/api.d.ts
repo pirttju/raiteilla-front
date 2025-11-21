@@ -14,6 +14,27 @@ export interface Station {
   timezone: string;
 }
 
+export interface StationTrain {
+  departure_date: string;
+  train_number: number;
+  train_type: string;
+  line_no: string | null;
+  origin: string;
+  origin_name: string;
+  destination: string;
+  destination_name: string;
+  company: string;
+  arrival: string | null;
+  estimated_arrival: string | null;
+  actual_arrival: string | null;
+  cancelled_arrival: boolean | null;
+  departure: string | null;
+  estimated_departure: string | null;
+  actual_departure: string | null;
+  cancelled_departure: boolean | null;
+  platform: string | null;
+}
+
 export interface Train {
   departure_date: string;
   train_number: number;

@@ -7,15 +7,18 @@
   "search": {
     "placeholder": "Søk stasjoner eller tog...",
     "station": "Stasjon",
-    "train": "Tog"
+    "train": "Tog",
+    "trainNotFound": "Tog ikke funnet."
   },
   "station": {
     "title": "Rutetabell: {station}",
     "arrivals": "Ankomster",
     "departures": "Avganger",
+    "arrival": "Ankomst",
+    "departure": "Avgang",
     "track": "Spor",
     "time": "Tid",
-    "dest_origin": "Destinasjon/Opprinnelse"
+    "actual": "Sanntid"
   },
   "train": {
     "details": "Tog {type} {number}",
