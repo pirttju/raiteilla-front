@@ -24,7 +24,7 @@
     "details": "Tog {type} {number}",
     "timetable": "Rutetabell",
     "route": "Rute",
-    "composition": "Sammensetning",
+    "composition": "Togtildeling",
     "speed": "Maks hastighet: {speed} km/t",
     "length": "Lengde: {length} m",
     "cancelled": "Kansellert"

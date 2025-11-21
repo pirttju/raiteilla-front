@@ -24,7 +24,7 @@
     "details": "Tåg {type} {number}",
     "timetable": "Tidtabell",
     "route": "Rutt",
-    "composition": "Sammansättning",
+    "composition": "Tågtilldelning",
     "speed": "Max hastighet: {speed} km/h",
     "length": "Längd: {length} m",
     "cancelled": "Inställt"
