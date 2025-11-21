@@ -22,6 +22,7 @@
   },
   "train": {
     "details": "Juna {type} {number}",
+    "timetable": "Aikataulu",
     "route": "Reitti",
     "composition": "Kokoonpano",
     "speed": "Max nopeus: {speed} km/h",

@@ -9,7 +9,7 @@
    id="svg1"
    xml:space="preserve"
    inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
-   sodipodi:docname="wagon_rear.svg"
+   sodipodi:docname="wagon_front.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns="http://www.w3.org/2000/svg"
@@ -25,8 +25,8 @@
      inkscape:document-units="px"
      showgrid="true"
      inkscape:zoom="8"
-     inkscape:cx="67.8125"
-     inkscape:cy="34.5"
+     inkscape:cx="69.9375"
+     inkscape:cy="38.125"
      inkscape:window-width="2285"
      inkscape:window-height="1210"
      inkscape:window-x="1483"
@@ -51,9 +51,9 @@
      inkscape:groupmode="layer"
      id="layer1"><path
        style="fill:#af9422;stroke:#000000;stroke-width:4;stroke-dasharray:none"
-       d="M 2,48 V 16"
+       d="M 126,48 V 16"
        id="path3-8" /><path
        id="path1-1-8"
        style="fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-dasharray:none;stroke-opacity:1"
-       d="m 104,4 c 12,0 20,12 20,24 l -2e-5,24 h -4 c 0,4.418278 -3.58172,8 -8,8 -4.41827,0 -8,-3.581722 -8,-8 h -3.999995 c 0,4.418278 -3.581717,8 -7.999995,8 -4.418278,0 -8,-3.581722 -8,-8 h -40 c 0,4.418278 -3.581722,8 -8,8 -4.418278,0 -8,-3.581722 -8,-8 H 24 c 0,4.418278 -3.58172,8 -8,8 -4.41828,0 -8,-3.581722 -8,-8 H 4 l 10e-6,-48 z"
+       d="M 24,4 C 12,4 4,16 4.000005,28 l 5e-6,24 h 4 c 0,4.418278 3.581722,8 8,8 4.418278,0 8,-3.581722 8,-8 h 4 c 0,4.418278 3.581722,8 8,8 4.418278,0 8,-3.581722 8,-8 h 40 c 0,4.418278 3.581722,8 8,8 4.418278,0 8,-3.581722 8,-8 H 104 c 0,4.418278 3.58172,8 8,8 4.41828,0 8,-3.581722 8,-8 h 4 l -1e-5,-48 z"
        sodipodi:nodetypes="ccccsccsccsccscccc" /></g></svg>

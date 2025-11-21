@@ -1,7 +1,7 @@
 import { getTrainDetails, getTrainComposition } from '@/lib/api';
 import { getDictionary } from '@/lib/dictionary';
 import Image from 'next/image';
-import lineColoursData from '@/lib/line_colours.json'; // Import the JSON
+import lineColoursData from '@/lib/line_colours.json';
 
 interface PageProps {
   params: Promise<{
@@ -19,7 +19,7 @@ export default async function TrainPage({ params }: PageProps) {
   const train = await getTrainDetails(country as any, date, number);
   const compositions = await getTrainComposition(country as any, date, number);
 
-  if (!train) return <div className="p-8">Train not found</div>;
+  if (!train) return <div className="p-8">{dict.search.trainNotFound || "Train not found"}</div>;
 
   const stationNameMap = new Map<string, string>();
   train.schedule.forEach((stop) => {
@@ -34,10 +34,9 @@ export default async function TrainPage({ params }: PageProps) {
     ? new Date(startTimeStr).toLocaleTimeString(lang, {hour:'2-digit', minute:'2-digit'}) 
     : '';
 
-  // --- LINE COLOR LOGIC ---
+  // Line Color Logic
   const lineColors = lineColoursData as Record<string, Record<string, string>>;
-  let lineBgColor = '#3b82f6'; // Default fallback color (blue-500) if not found
-  
+  let lineBgColor = '#3b82f6'; 
   if (train.line_no && lineColors[country] && lineColors[country][train.line_no]) {
     lineBgColor = `#${lineColors[country][train.line_no]}`;
   }
@@ -51,7 +50,6 @@ export default async function TrainPage({ params }: PageProps) {
         </h1>
         
         <div className="text-xl font-semibold text-blue-800 mb-1 flex items-center gap-2">
-          {/* Render Line Number with Color Box if it exists */}
           {train.line_no && (
             <span 
               className="inline-flex items-center justify-center px-2 py-0.5 rounded text-white font-bold shadow-sm text-lg min-w-[40px]"
@@ -60,7 +58,6 @@ export default async function TrainPage({ params }: PageProps) {
               {train.line_no}
             </span>
           )}
-          
           <span>
             {train.train_type} {train.train_number}
           </span>
@@ -78,32 +75,49 @@ export default async function TrainPage({ params }: PageProps) {
             <span>🚆</span> {dict.train.composition}
           </h2>
 
-          <div className="space-y-12">
+          <div>
             {compositions.map((comp, idx) => {
-              const reversedGroups = [...comp.groups].reverse();
+              const groups = comp.groups; 
 
               return (
                 <div key={idx} className="relative">
                   {/* Leg Header */}
                   <div className="mb-4 pb-2 border-b flex justify-between items-end">
                     <h3 className="font-bold text-lg text-blue-900">
-                      {getStationName(comp.begin_station_short_code)} &rarr; {getStationName(comp.end_station_short_code)}
+                      {getStationName(comp.begin_station_short_code)}&ndash;{getStationName(comp.end_station_short_code)}
                     </h3>
                     <div className="text-xs text-gray-500 font-mono">
-                      {comp.maximum_speed > 0 ? `${comp.maximum_speed} km/h` : ''} 
-                      {comp.total_length > 0 ? `${comp.total_length} m` : ''}
+                      {comp.maximum_speed} km/h • {comp.total_length} m
                     </div>
                   </div>
 
                   {/* Train Visualization */}
-                  <div className="overflow-x-auto pb-4">
-                    <div className="flex items-start min-w-max px-2 justify-start py-2">
+                  <div className="overflow-x-auto pb-2">
+                    <div className="flex items-end min-w-max px-2 justify-start py-2">
                       
+                      {/* DIRECTION ARROW (Left) */}
+                      <div className="flex flex-col items-center justify-center mb-4 opacity-50">
+                        <svg 
+                          xmlns="http://www.w3.org/2000/svg" 
+                          width="24" height="24" 
+                          viewBox="0 0 24 24" 
+                          fill="none" 
+                          stroke="currentColor" 
+                          strokeWidth="2" 
+                          strokeLinecap="round" 
+                          strokeLinejoin="round"
+                          className="text-gray-400"
+                        >
+                          <path d="m12 19-7-7 7-7"/>
+                          <path d="M19 12H5"/>
+                        </svg>
+                      </div>
+
                       {/* Iterate Groups */}
-                      {reversedGroups.map((group, gIdx) => {
+                      {groups.map((group, gIdx) => {
                         const vehicles = group.vehicles;
                         const hasLocomotive = vehicles.some(v => v.vehicle_type === 'locomotive');
-                        const reversedVehicles = [...vehicles].reverse();
+                        const orderedVehicles = [...vehicles];
 
                         return (
                           <div 
@@ -112,25 +126,31 @@ export default async function TrainPage({ params }: PageProps) {
                           >
                             {/* VEHICLES ROW */}
                             <div className="flex items-start">
-                              {reversedVehicles.map((v, vIdx) => {
+                              {orderedVehicles.map((v, vIdx) => {
                                 const isLocoType = v.vehicle_type === 'locomotive';
                                 const isEdo = v.vehicle_number === 'Edo';
+                                const isDm12 = v.vehicle_number === 'Dm12';
                                 
                                 let iconSrc = '/wagon.svg';
 
-                                if (hasLocomotive) {
+                                if (isDm12) {
+                                  // Special rule: Dm12 is always round
+                                  iconSrc = '/wagon_round.svg';
+                                } else if (hasLocomotive) {
                                   if (isLocoType) {
                                     iconSrc = '/locomotive.svg';
                                   } else if (isEdo) {
-                                    if (vIdx === reversedVehicles.length - 1) iconSrc = '/wagon_front.svg';
-                                    else if (vIdx === 0) iconSrc = '/wagon_rear.svg';
+                                    // Edo Logic (Left is Front)
+                                    if (vIdx === 0) iconSrc = '/wagon_front.svg'; // Front/Left
+                                    else if (vIdx === orderedVehicles.length - 1) iconSrc = '/wagon_rear.svg'; // Rear/Right
                                   }
                                 } else {
-                                  if (reversedVehicles.length === 1) {
+                                  // MU Logic (Per Group)
+                                  if (orderedVehicles.length === 1) {
                                     iconSrc = '/wagon_round.svg';
-                                  } else if (vIdx === reversedVehicles.length - 1) {
-                                    iconSrc = '/wagon_front.svg';
                                   } else if (vIdx === 0) {
+                                    iconSrc = '/wagon_front.svg';
+                                  } else if (vIdx === orderedVehicles.length - 1) {
                                     iconSrc = '/wagon_rear.svg';
                                   }
                                 }
@@ -226,7 +246,7 @@ export default async function TrainPage({ params }: PageProps) {
       {/* SCHEDULE */}
       <div className="bg-white rounded shadow p-6 mb-6">
         <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-          <span>🕒</span> {dict.station.title.replace('{station}', '')}
+          <span>🕒</span> {dict.train.timetable}
         </h2>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
@@ -242,7 +262,6 @@ export default async function TrainPage({ params }: PageProps) {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {train.schedule.map((stop, idx) => {
-                const isPast = stop.actual_departure ? new Date(stop.actual_departure) < new Date() : false;
                 return (
                   <tr key={idx} className={`hover:bg-blue-50 transition ${stop.commercial_stop === false ? 'text-gray-400' : 'text-gray-900'}`}>
                     <td className="p-3 font-medium">

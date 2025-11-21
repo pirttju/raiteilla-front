@@ -22,6 +22,7 @@
   },
   "train": {
     "details": "Tog {type} {number}",
+    "timetable": "Rutetabell",
     "route": "Rute",
     "composition": "Sammensetning",
     "speed": "Maks hastighet: {speed} km/t",

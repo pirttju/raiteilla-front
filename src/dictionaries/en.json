@@ -22,6 +22,7 @@
   },
   "train": {
     "details": "Train {type} {number}",
+    "timetable": "Schedule",
     "route": "Route",
     "composition": "Composition",
     "speed": "Max Speed: {speed} km/h",
