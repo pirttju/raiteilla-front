@@ -177,9 +177,8 @@ export default function MapPage() {
   return (
     <div 
       ref={mapContainer} 
-      className="w-full shadow-xl border dark:border-gray-700 relative block"
-      // Height calculation: 100vh (Viewport) - ~70px (Header) - ~40px (Main Layout Padding) = ~110px
-      style={{ height: 'calc(100vh - 65px)', width: '100%' }}
+      className="w-full shadow-xl relative block"
+      style={{ height: 'calc(100vh - 64px)', width: '100%' }}
     >
       {/* Legend / Info Box */}
       <div className="absolute top-4 left-4 bg-white dark:bg-gray-800 p-3 rounded shadow-lg z-10 text-sm opacity-90 border dark:border-gray-700 pointer-events-none">
