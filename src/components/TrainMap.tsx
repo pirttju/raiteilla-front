@@ -14,13 +14,13 @@ interface VehicleProperties {
 }
 
 export default function MapPage() {
-  // We will attach the map directly to this ref
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const [isDark, setIsDark] = useState(false);
   const [lastFetchTime, setLastFetchTime] = useState<string>('-');
 
+  // Theme Detection
   useEffect(() => {
     const checkDark = () => document.documentElement.classList.contains('dark');
     setIsDark(checkDark());
@@ -29,6 +29,7 @@ export default function MapPage() {
     return () => observer.disconnect();
   }, []);
 
+  // Map Initialization
   useEffect(() => {
     if (map.current || !mapContainer.current) return;
 
@@ -44,7 +45,7 @@ export default function MapPage() {
     map.current.addControl(new maplibregl.NavigationControl(), 'top-right');
 
     map.current.on('load', () => {
-      map.current?.resize(); // Force resize calculation
+      map.current?.resize(); 
       initializeLayers();
       fetchVehicles();
       intervalRef.current = setInterval(fetchVehicles, 5000);
@@ -52,6 +53,7 @@ export default function MapPage() {
 
     map.current.on('moveend', fetchVehicles);
 
+    // Click Handler
     map.current.on('click', 'vehicles-circle', (e) => {
       if (!e.features || !e.features[0]) return;
       
@@ -89,7 +91,7 @@ export default function MapPage() {
     };
   }, []); 
 
-  // Watch for theme changes
+  // Handle Theme Changes
   useEffect(() => {
     if (!map.current) return;
     const style = isDark 
@@ -173,14 +175,11 @@ export default function MapPage() {
   };
 
   return (
-    // Simplified structure: 
-    // 1. One Main Div
-    // 2. Direct Style Height (80vh)
-    // 3. Relative positioning for the child Legend
     <div 
       ref={mapContainer} 
-      className="w-full rounded-lg shadow-xl border dark:border-gray-700 relative block"
-      style={{ height: '89vh', width: '100%' }}
+      className="w-full shadow-xl border dark:border-gray-700 relative block"
+      // Height calculation: 100vh (Viewport) - ~70px (Header) - ~40px (Main Layout Padding) = ~110px
+      style={{ height: 'calc(100vh - 65px)', width: '100%' }}
     >
       {/* Legend / Info Box */}
       <div className="absolute top-4 left-4 bg-white dark:bg-gray-800 p-3 rounded shadow-lg z-10 text-sm opacity-90 border dark:border-gray-700 pointer-events-none">
