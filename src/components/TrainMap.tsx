@@ -4,56 +4,52 @@ import maplibregl from 'maplibre-gl';
 
 // Define the shape of the Vehicle feature properties
 interface VehicleProperties {
-  ts: number; // Unix timestamp in seconds from the API
-  ro: string; // Route/Train number
-  ve: string; // Vehicle ID
-  sp: number | null; // Speed
-  be: number | null; // Bearing
+  ts: number;
+  ro: string;
+  ve: string;
+  sp: number | null;
+  be: number | null;
   lat: number;
   lon: number;
 }
 
 export default function MapPage() {
+  // We will attach the map directly to this ref
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const [isDark, setIsDark] = useState(false);
   const [lastFetchTime, setLastFetchTime] = useState<string>('-');
 
-  // Detect theme change for map style
   useEffect(() => {
     const checkDark = () => document.documentElement.classList.contains('dark');
     setIsDark(checkDark());
-    
     const observer = new MutationObserver(() => setIsDark(checkDark()));
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
     return () => observer.disconnect();
   }, []);
 
-  // Initialize Map
   useEffect(() => {
-    if (map.current) return;
+    if (map.current || !mapContainer.current) return;
 
     map.current = new maplibregl.Map({
-      container: mapContainer.current!,
+      container: mapContainer.current,
       style: isDark 
         ? 'https://sv1.raiteilla.fi/maps/osm-night/style.json' 
         : 'https://sv1.raiteilla.fi/maps/osm-light/style.json',
-      center: [25, 62], // Approx center of Finland
+      center: [25, 62],
       zoom: 6,
     });
 
     map.current.addControl(new maplibregl.NavigationControl(), 'top-right');
 
     map.current.on('load', () => {
+      map.current?.resize(); // Force resize calculation
       initializeLayers();
       fetchVehicles();
-      
-      // Poll for updates every 5 seconds
       intervalRef.current = setInterval(fetchVehicles, 5000);
     });
 
-    // Refresh data when user pans/zooms
     map.current.on('moveend', fetchVehicles);
 
     map.current.on('click', 'vehicles-circle', (e) => {
@@ -61,9 +57,6 @@ export default function MapPage() {
       
       const props = e.features[0].properties as VehicleProperties;
       const coordinates = (e.features[0].geometry as any).coordinates.slice();
-
-      // Convert Unix timestamp (seconds) to JavaScript Date (milliseconds)
-      // This is the specific time the vehicle sent this location data
       const lastUpdatedDate = new Date(props.ts * 1000);
       const lastUpdatedStr = lastUpdatedDate.toLocaleTimeString();
 
@@ -84,7 +77,6 @@ export default function MapPage() {
         .addTo(map.current!);
     });
 
-    // Hover cursor effects
     map.current.on('mouseenter', 'vehicles-circle', () => {
       if (map.current) map.current.getCanvas().style.cursor = 'pointer';
     });
@@ -97,7 +89,7 @@ export default function MapPage() {
     };
   }, []); 
 
-  // Handle Theme Style Updates (preserve layers)
+  // Watch for theme changes
   useEffect(() => {
     if (!map.current) return;
     const style = isDark 
@@ -162,7 +154,7 @@ export default function MapPage() {
     if (!map.current) return;
 
     const bounds = map.current.getBounds();
-    const bbox = `${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`;
+    const bbox = `${bounds.getSouth()},${bounds.getWest()},${bounds.getNorth()},${bounds.getEast()}`;
 
     try {
       const res = await fetch(`https://beta.raiteilla.fi/api/vehicles?routeType=2&bbox=${bbox}`);
@@ -173,7 +165,6 @@ export default function MapPage() {
       const source = map.current.getSource('vehicles') as maplibregl.GeoJSONSource;
       if (source) {
         source.setData(data);
-        // This timestamp indicates when the app last successfully fetched data from the API
         setLastFetchTime(new Date().toLocaleTimeString());
       }
     } catch (error) {
@@ -182,11 +173,17 @@ export default function MapPage() {
   };
 
   return (
-    <div className="relative h-[calc(100vh-100px)] w-full rounded-lg overflow-hidden border dark:border-gray-700">
-      <div ref={mapContainer} className="absolute inset-0" />
-      
+    // Simplified structure: 
+    // 1. One Main Div
+    // 2. Direct Style Height (80vh)
+    // 3. Relative positioning for the child Legend
+    <div 
+      ref={mapContainer} 
+      className="w-full rounded-lg shadow-xl border dark:border-gray-700 relative block"
+      style={{ height: '89vh', width: '100%' }}
+    >
       {/* Legend / Info Box */}
-      <div className="absolute top-4 left-4 bg-white dark:bg-gray-800 p-3 rounded shadow-lg z-10 text-sm opacity-90 border dark:border-gray-700">
+      <div className="absolute top-4 left-4 bg-white dark:bg-gray-800 p-3 rounded shadow-lg z-10 text-sm opacity-90 border dark:border-gray-700 pointer-events-none">
         <h3 className="font-bold mb-1 text-gray-900 dark:text-gray-100">Live Map</h3>
         <div className="flex items-center gap-2 mb-2 text-gray-800 dark:text-gray-200">
           <div className="w-3 h-3 rounded-full bg-red-500 border border-white"></div>
