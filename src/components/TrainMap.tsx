@@ -138,9 +138,9 @@ export default function MapPage() {
         source: 'vehicles',
         layout: {
           'text-field': ['get', 'ro'],
-          'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+          'text-font': ['Noto Sans Bold'],
           'text-size': 12,
-          'text-offset': [0, 1.2], 
+          'text-offset': [0, 0.5], 
           'text-anchor': 'top'
         },
         paint: {
