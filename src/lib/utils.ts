@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { COUNTRY_TIMEZONES } from './constants';
 
 // Standard utility to merge Tailwind classes
 export function cn(...inputs: ClassValue[]) {
@@ -30,4 +31,26 @@ export function getNavDates(currentDate: string) {
     prev: prev.toISOString().split('T')[0],
     next: next.toISOString().split('T')[0]
   };
+}
+
+export function formatStationTime(
+  dateStr: string | null | undefined, 
+  country: string, 
+  lang: string
+): string {
+  if (!dateStr) return '-';
+  
+  // Resolve timezone, default to UTC if unknown
+  const timeZone = COUNTRY_TIMEZONES[country] || 'UTC';
+  
+  try {
+    return new Date(dateStr).toLocaleTimeString(lang, {
+      hour: '2-digit',
+      minute: '2-digit',
+      timeZone: timeZone,
+    });
+  } catch (error) {
+    console.error(`Error formatting time for ${country}:`, error);
+    return '-';
+  }
 }

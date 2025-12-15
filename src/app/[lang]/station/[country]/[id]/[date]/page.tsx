@@ -1,5 +1,7 @@
 import { getStationSchedule, getStationInfo } from '@/lib/api';
 import { getDictionary } from '@/lib/dictionary';
+// Import the new utility function
+import { formatStationTime } from '@/lib/utils';
 import Link from 'next/link';
 
 interface PageProps {
@@ -12,7 +14,6 @@ interface PageProps {
 }
 
 export default async function StationPage({ params }: PageProps) {
-  // 1. Await params
   const { lang, country, id, date } = await params;
 
   const dict = await getDictionary(lang);
@@ -38,23 +39,24 @@ export default async function StationPage({ params }: PageProps) {
           </thead>
           <tbody>
             {schedule.map((train, idx) => {
-                return (
+              return (
                 <tr key={idx} className="border-b hover:bg-gray-50">
                   <td className="p-3 font-mono">
                     <div className={train.cancelled_arrival ? 'line-through text-red-500' : ''}>
-                      {train.arrival ? new Date(train.arrival).toLocaleTimeString(lang, {hour:'2-digit', minute:'2-digit'}) : '-'}
+                      {/* Usage of external utility */}
+                      {formatStationTime(train.arrival, country, lang)}
                     </div>
                   </td>
                   <td className="p-3 font-mono">
-                    {train.actual_arrival ? new Date(train.actual_arrival).toLocaleTimeString(lang, {hour:'2-digit', minute:'2-digit'}) : '-'}
+                    {formatStationTime(train.actual_arrival, country, lang)}
                   </td>
                   <td className="p-3 font-mono">
                     <div className={train.cancelled_departure ? 'line-through text-red-500' : ''}>
-                    {train.departure ? new Date(train.departure).toLocaleTimeString(lang, {hour:'2-digit', minute:'2-digit'}) : '-'}
+                       {formatStationTime(train.departure, country, lang)}
                     </div>
                   </td>
                   <td className="p-3 font-mono">
-                    {train.actual_departure ? new Date(train.actual_departure).toLocaleTimeString(lang, {hour:'2-digit', minute:'2-digit'}) : '-'}
+                    {formatStationTime(train.actual_departure, country, lang)}
                   </td>
                   <td className="p-3">
                     <Link href={`/${lang}/train/${country}/${train.departure_date}/${train.train_number}`} className="text-blue-600 font-bold hover:underline">

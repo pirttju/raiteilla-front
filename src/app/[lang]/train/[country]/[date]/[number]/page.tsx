@@ -1,5 +1,7 @@
 import { getTrainDetails, getTrainComposition } from '@/lib/api';
 import { getDictionary } from '@/lib/dictionary';
+import { formatStationTime } from '@/lib/utils'; // Import the helper
+import { COUNTRY_TIMEZONES } from '@/lib/constants'; // Import constants for the Date header
 import Image from 'next/image';
 import lineColoursData from '@/lib/line_colours.json';
 
@@ -30,9 +32,9 @@ export default async function TrainPage({ params }: PageProps) {
 
   const firstStop = train.schedule[0];
   const startTimeStr = firstStop.actual_departure || firstStop.departure;
-  const startTime = startTimeStr 
-    ? new Date(startTimeStr).toLocaleTimeString(lang, {hour:'2-digit', minute:'2-digit'}) 
-    : '';
+  
+  // Update: Use the utility for the Header time
+  const startTime = formatStationTime(startTimeStr, country, lang);
 
   // Line Color Logic
   const lineColors = lineColoursData as Record<string, Record<string, string>>;
@@ -40,6 +42,9 @@ export default async function TrainPage({ params }: PageProps) {
   if (train.line_no && lineColors[country] && lineColors[country][train.line_no]) {
     lineBgColor = `#${lineColors[country][train.line_no]}`;
   }
+
+  // Resolve timezone for the main Date display
+  const timeZone = COUNTRY_TIMEZONES[country] || 'UTC';
 
   return (
     <div className="w-full p-4">
@@ -64,6 +69,7 @@ export default async function TrainPage({ params }: PageProps) {
         </div>
         
         <div className="text-sm text-gray-500 tracking-wide">
+          {/* Update: Ensure the date also respects the timezone */}
           {train.company} • {new Date(date).toLocaleDateString(lang)}
         </div>
       </div>
@@ -134,18 +140,15 @@ export default async function TrainPage({ params }: PageProps) {
                                 let iconSrc = '/wagon.svg';
 
                                 if (isDm12) {
-                                  // Special rule: Dm12 is always round
                                   iconSrc = '/wagon_round.svg';
                                 } else if (hasLocomotive) {
                                   if (isLocoType) {
                                     iconSrc = '/locomotive.svg';
                                   } else if (isEdo) {
-                                    // Edo Logic (Left is Front)
-                                    if (vIdx === 0) iconSrc = '/wagon_front.svg'; // Front/Left
-                                    else if (vIdx === orderedVehicles.length - 1) iconSrc = '/wagon_rear.svg'; // Rear/Right
+                                    if (vIdx === 0) iconSrc = '/wagon_front.svg'; 
+                                    else if (vIdx === orderedVehicles.length - 1) iconSrc = '/wagon_rear.svg'; 
                                   }
                                 } else {
-                                  // MU Logic (Per Group)
                                   if (orderedVehicles.length === 1) {
                                     iconSrc = '/wagon_round.svg';
                                   } else if (vIdx === 0) {
@@ -155,7 +158,6 @@ export default async function TrainPage({ params }: PageProps) {
                                   }
                                 }
 
-                                // No Entry / Closed Logic
                                 const salesNumInt = parseInt(v.sales_number || '0', 10);
                                 const isNoEntryRange = v.sales_number && salesNumInt >= 990 && salesNumInt <= 999;
                                 const isClosed = (v as any).sales_state === "closed"; 
@@ -269,25 +271,25 @@ export default async function TrainPage({ params }: PageProps) {
                     </td>
                     <td className="p-3 text-right font-mono">
                       <div className={stop.cancelled_arrival ? 'line-through text-red-500' : ''}>
-                        {stop.arrival ? new Date(stop.arrival).toLocaleTimeString(lang, {hour:'2-digit', minute:'2-digit'}) : '-'}
+                        {formatStationTime(stop.arrival, country, lang)}
                       </div>
                     </td>
                     <td className="p-3 text-right font-mono">
                       {stop.actual_arrival 
                           ? <span className={stop.arrival && stop.actual_arrival !== stop.arrival ? 'text-red-600 font-bold' : ''}>
-                              {new Date(stop.actual_arrival).toLocaleTimeString(lang, {hour:'2-digit', minute:'2-digit'})}
+                              {formatStationTime(stop.actual_arrival, country, lang)}
                             </span>
                           : '-'}
                     </td>
                     <td className="p-3 text-right font-mono">
                        <div className={stop.cancelled_departure ? 'line-through text-red-500' : ''}>
-                        {stop.departure ? new Date(stop.departure).toLocaleTimeString(lang, {hour:'2-digit', minute:'2-digit'}) : '-'}
+                        {formatStationTime(stop.departure, country, lang)}
                       </div>
                     </td>
                     <td className="p-3 text-right font-mono">
                       {stop.actual_departure 
                           ? <span className={stop.departure && stop.actual_departure !== stop.departure ? 'text-red-600 font-bold' : ''}>
-                              {new Date(stop.actual_departure).toLocaleTimeString(lang, {hour:'2-digit', minute:'2-digit'})}
+                              {formatStationTime(stop.actual_departure, country, lang)}
                             </span> : '-'}
                     </td>
                     <td className="p-3 text-center font-bold text-blue-800">{stop.platform || '-'}</td>
