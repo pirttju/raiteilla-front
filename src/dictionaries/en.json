@@ -2,7 +2,8 @@
   "nav": {
     "home": "Home",
     "map": "Map",
-    "trains": "Trains"
+    "trains": "Trains",
+    "about": "About"
   },
   "search": {
     "placeholder": "Search for stations or trains...",
@@ -33,5 +34,9 @@
     "date": "Date",
     "prevDay": "Previous day",
     "nextDay": "Next day"
+  },
+  "about": {
+    "title": "Sources of information",
+    "license": "licensed under"
   }
 }

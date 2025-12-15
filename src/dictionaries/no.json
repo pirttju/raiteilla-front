@@ -2,7 +2,8 @@
   "nav": {
     "home": "Hjem",
     "map": "Kart",
-    "trains": "Tog"
+    "trains": "Tog",
+    "about": "Om oss"
   },
   "search": {
     "placeholder": "Søk stasjoner eller tog...",
@@ -33,5 +34,9 @@
     "date": "Dato",
     "prevDay": "Forrige dag",
     "nextDay": "Neste dag"
+  },
+  "about": {
+    "title": "Originale datakilder",
+    "license": "lisens"
   }
 }

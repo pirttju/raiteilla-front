@@ -18,8 +18,9 @@ export default function Header({ dict, lang }: { dict: any, lang: string }) {
         <Link href={`/${lang}`}>Raiteilla</Link>
       </div>
       <nav className="flex gap-4 items-center">
-        <Link href={`/${lang}/map`} className="hover:underline">{dict.nav.map}</Link>
         <Link href={`/${lang}/trains/fi/${new Date().toISOString().split('T')[0]}`} className="hover:underline">{dict.nav.trains}</Link>
+        <Link href={`/${lang}/map`} className="hover:underline">{dict.nav.map}</Link>
+        <Link href={`/${lang}/about`} className="hover:underline">{dict.nav.about}</Link>
         
         <select 
           value={lang} 

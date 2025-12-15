@@ -7,6 +7,7 @@ export const getFlag = (code: string) => {
   if (code === 'fi') return '🇫🇮';
   if (code === 'se') return '🇸🇪';
   if (code === 'no') return '🇳🇴';
+  if (code === 'gb') return '🇬🇧';
   return '🇪🇺';
 };
 

@@ -2,7 +2,8 @@
   "nav": {
     "home": "Koti",
     "map": "Kartta",
-    "trains": "Junat"
+    "trains": "Junat",
+    "about": "Tietoja"
   },
   "search": {
     "placeholder": "Hae asemia tai junia...",
@@ -33,5 +34,9 @@
     "date": "Päivämäärä",
     "prevDay": "Edellinen päivä",
     "nextDay": "Seuraava päivä"
+  },
+  "about": {
+    "title": "Liikennetietojen lähde",
+    "license": "lisenssi"
   }
 }
