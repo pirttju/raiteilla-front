@@ -32,7 +32,8 @@ export default function SearchBox({ lang, initialStations }: SearchBoxProps) {
       .slice(0, 5)
       .map(s => ({ type: 'station', data: s }));
 
-    // Simulate Train search
+    /*
+    // TODO: Train search
     const trainResults = [];
     if (!isNaN(Number(query))) {
         trainResults.push({
@@ -44,20 +45,25 @@ export default function SearchBox({ lang, initialStations }: SearchBoxProps) {
             }
         });
     }
-
+    
     setSuggestions([...stationResults, ...trainResults].slice(0, 10));
+    */
+
+    setSuggestions(stationResults.slice(0, 10));
   }, [query, initialStations]);
 
   const handleSelect = (item: any) => {
+    // Check if feed_id exists, fallback to 'fi' if missing
+    const feed = item.data.feed_id || 'fi';
+
+    // TODO: Support time zones based on feed_id
     const date = new Date().toISOString().split('T')[0];
-    
+
     if (item.type === 'station') {
-      // Check if feed_id exists, fallback to 'fi' if missing
-      const feed = item.data.feed_id || 'fi';
       router.push(`/${lang}/station/${feed}/${item.data.station}/${date}`);
     } else {
-      // FIX: use item.data.train_number (removed extra .data)
-      router.push(`/${lang}/train/${item.data.feed_id}/${date}/${item.data.train_number}`);
+      // TODO: Train search result
+      //router.push(`/${lang}/train/${item.data.feed_id}/${date}/${item.data.train_number}`);
     }
   };
 
