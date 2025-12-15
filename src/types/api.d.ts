@@ -1,6 +1,6 @@
 // src/types/api.d.ts
 
-export type CountryCode = 'fi' | 'se' | 'no';
+export type CountryCode = 'fi' | 'se' | 'no' | 'gb';
 
 export interface Station {
   id: number;

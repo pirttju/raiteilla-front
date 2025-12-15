@@ -10,8 +10,8 @@ export default async function Home({
   const { lang } = await params; // Await here
   const dict = await getDictionary(lang);
   
-  const [fi, se, no] = await Promise.all([getStations('fi'), getStations('se'), getStations('no')]);
-  const allStations = [...fi, ...se, ...no];
+  const [fi, se, no, gb] = await Promise.all([getStations('fi'), getStations('se'), getStations('no'), getStations('gb')]);
+  const allStations = [...fi, ...se, ...no, ...gb];
 
   return (
     <div className="flex flex-col items-center justify-center h-[80vh] px-4">
