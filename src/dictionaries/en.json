@@ -6,7 +6,7 @@
     "about": "About"
   },
   "search": {
-    "placeholder": "Search for stations or trains...",
+    "placeholder": "Search for stations...",
     "station": "Station",
     "train": "Train",
     "trainNotFound": "Train not found."

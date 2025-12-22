@@ -11,6 +11,12 @@ export const getFlag = (code: string) => {
   return '🇪🇺';
 };
 
+export async function findStations(name: string): Promise<Station[]> {
+  const res = await fetch(`${BASE_URL}/findstations?name=${name}`, { next: { revalidate: 3600 } });
+  const json = await res.json();
+  return json.success ? json.data : [];
+}
+
 export async function getStations(country: CountryCode = 'fi'): Promise<Station[]> {
   const res = await fetch(`${BASE_URL}/stations/${country}`, { next: { revalidate: 3600 } });
   const json = await res.json();

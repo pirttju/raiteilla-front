@@ -6,7 +6,7 @@
     "about": "Tietoja"
   },
   "search": {
-    "placeholder": "Hae asemia tai junia...",
+    "placeholder": "Hae asemia...",
     "station": "Asema",
     "train": "Juna",
     "trainNotFound": "Junaa ei löytynyt."

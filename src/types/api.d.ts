@@ -6,17 +6,24 @@ export interface Station {
   id: number;
   feed_id: CountryCode;
   station: string; // Short code like "HKI"
+  short_code: string | null;
   name: string;
-  type: string;
-  commercial_code: string;
+  type: string | null;
+  is_hidden: boolean | null;
+  commercial_code: string | null;
   coordinates: [number, number];
-  country_code: string;
-  timezone: string;
+  country_code: string | null;
+  primary_code: number | null;
+  timezone: string | null;
+  parent_station_id: number | null;
+  km_m: string | null;
+  moh: number | null;
 }
 
 export interface StationTrain {
   departure_date: string;
   train_number: number;
+  headcode: string | null;
   train_type: string;
   line_no: string | null;
   origin: string;
@@ -38,6 +45,7 @@ export interface StationTrain {
 export interface Train {
   departure_date: string;
   train_number: number;
+  headcode: string | null;
   train_type: string;
   line_no: string | null;
   origin: string;

@@ -6,7 +6,7 @@
     "about": "Om oss"
   },
   "search": {
-    "placeholder": "Sök stationer eller tåg...",
+    "placeholder": "Sök stationer...",
     "station": "Station",
     "train": "Tåg",
     "trainNotFound": "Tåget hittades inte."
