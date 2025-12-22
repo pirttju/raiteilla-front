@@ -1,7 +1,6 @@
 import { getStationSchedule, getStationInfo } from '@/lib/api';
 import { getDictionary } from '@/lib/dictionary';
-// Import the new utility function
-import { formatStationTime } from '@/lib/utils';
+import { formatStationTime, checkIsLate } from '@/lib/utils';
 import Link from 'next/link';
 
 interface PageProps {
@@ -28,36 +27,47 @@ export default async function StationPage({ params }: PageProps) {
         <table className="w-full text-left text-sm">
           <thead className="bg-gray-100 border-b">
             <tr>
-              <th className="p-3">{dict.station.arrival}</th>
-              <th className="p-3">{dict.station.actual}</th>
-              <th className="p-3">{dict.station.departure}</th>
-              <th className="p-3">{dict.station.actual}</th>
+              <th className="p-3 text-center">{dict.station.arrival}</th>
+              <th className="p-3 text-center">{dict.station.actual}</th>
+              <th className="p-3 text-center">{dict.station.departure}</th>
+              <th className="p-3 text-center">{dict.station.actual}</th>
               <th className="p-3">{dict.search.train}</th>
               <th className="p-3">{dict.train.route}</th>
-              <th className="p-3">{dict.station.track}</th>
+              <th className="p-3 text-center">{dict.station.track}</th>
             </tr>
           </thead>
           <tbody>
             {schedule.map((train, idx) => {
+              // Calculate lateness for this specific row
+              const isArrivalLate = checkIsLate(train.arrival, train.actual_arrival);
+              const isDepartureLate = checkIsLate(train.departure, train.actual_departure);
+
               return (
                 <tr key={idx} className="border-b hover:bg-gray-50">
-                  <td className="p-3 font-mono">
-                    <div className={train.cancelled_arrival ? 'line-through text-red-500' : ''}>
-                      {/* Usage of external utility */}
+                  {/* Scheduled Arrival */}
+                  <td className="p-3 text-center">
+                    <div className={train.cancelled_arrival ? 'line-through text-red-600' : ''}>
                       {formatStationTime(train.arrival, country, lang)}
                     </div>
                   </td>
-                  <td className="p-3 font-mono">
+                  
+                  {/* Actual Arrival - Bold, and Red if late */}
+                  <td className={`p-3 text-center font-bold ${isArrivalLate ? 'text-red-600' : ''}`}>
                     {formatStationTime(train.actual_arrival, country, lang)}
                   </td>
-                  <td className="p-3 font-mono">
-                    <div className={train.cancelled_departure ? 'line-through text-red-500' : ''}>
+
+                  {/* Scheduled Departure */}
+                  <td className="p-3 text-center">
+                    <div className={train.cancelled_departure ? 'line-through text-red-600' : ''}>
                        {formatStationTime(train.departure, country, lang)}
                     </div>
                   </td>
-                  <td className="p-3 font-mono">
+
+                  {/* Actual Departure - Bold, and Red if late */}
+                  <td className={`p-3 text-center font-bold ${isDepartureLate ? 'text-red-600' : ''}`}>
                     {formatStationTime(train.actual_departure, country, lang)}
                   </td>
+
                   <td className="p-3">
                     <Link href={`/${lang}/train/${country}/${train.departure_date}/${train.train_number}`} className="text-blue-600 font-bold hover:underline">
                       {train.train_type} {train.train_number}
@@ -66,7 +76,7 @@ export default async function StationPage({ params }: PageProps) {
                   <td className="p-3">
                     {train.origin_name}&ndash;{train.destination_name}
                   </td>
-                  <td className="p-3">{train.platform || '-'}</td>
+                  <td className="p-3 text-center font-bold text-blue-600">{train.platform || '-'}</td>
                 </tr>
               )
             })}

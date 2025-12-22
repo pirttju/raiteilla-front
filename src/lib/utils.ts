@@ -7,6 +7,20 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// Helper to determine if the train is 6+ minutes late
+export function checkIsLate(scheduled: string | null | undefined, actual: string | null | undefined) {
+  if (!scheduled || !actual) return false;
+  
+  const scheduledTime = new Date(scheduled).getTime();
+  const actualTime = new Date(actual).getTime();
+
+  // Ensure dates are valid
+  if (isNaN(scheduledTime) || isNaN(actualTime)) return false;
+
+  const differenceInMinutes = (actualTime - scheduledTime) / 60000;
+  return differenceInMinutes >= 6;
+};
+
 // Format "2025-11-20" to "20.11.2025" (Finnish style) or local specific
 export function formatDateDisplay(dateStr: string, locale: string) {
   return new Date(dateStr).toLocaleDateString(locale, {

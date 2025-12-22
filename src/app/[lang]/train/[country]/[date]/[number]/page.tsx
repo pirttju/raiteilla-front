@@ -1,7 +1,6 @@
 import { getTrainDetails, getTrainComposition } from '@/lib/api';
 import { getDictionary } from '@/lib/dictionary';
-import { formatStationTime } from '@/lib/utils'; // Import the helper
-import { COUNTRY_TIMEZONES } from '@/lib/constants'; // Import constants for the Date header
+import { formatStationTime, checkIsLate } from '@/lib/utils';
 import Image from 'next/image';
 import lineColoursData from '@/lib/line_colours.json';
 
@@ -38,13 +37,10 @@ export default async function TrainPage({ params }: PageProps) {
 
   // Line Color Logic
   const lineColors = lineColoursData as Record<string, Record<string, string>>;
-  let lineBgColor = '#3b82f6'; 
+  let lineBgColor = '#404040';
   if (train.line_no && lineColors[country] && lineColors[country][train.line_no]) {
     lineBgColor = `#${lineColors[country][train.line_no]}`;
   }
-
-  // Resolve timezone for the main Date display
-  const timeZone = COUNTRY_TIMEZONES[country] || 'UTC';
 
   return (
     <div className="w-full p-4">
@@ -69,7 +65,6 @@ export default async function TrainPage({ params }: PageProps) {
         </div>
         
         <div className="text-sm text-gray-500 tracking-wide">
-          {/* Update: Ensure the date also respects the timezone */}
           {train.company} • {new Date(date).toLocaleDateString(lang)}
         </div>
       </div>
@@ -92,7 +87,7 @@ export default async function TrainPage({ params }: PageProps) {
                     <h3 className="font-bold text-lg text-blue-900">
                       {getStationName(comp.begin_station_short_code)}&ndash;{getStationName(comp.end_station_short_code)}
                     </h3>
-                    <div className="text-xs text-gray-500 font-mono">
+                    <div className="text-xs text-gray-500">
                       {comp.maximum_speed} km/h • {comp.total_length} m
                     </div>
                   </div>
@@ -217,7 +212,7 @@ export default async function TrainPage({ params }: PageProps) {
                                       )}
                                     </div>
 
-                                    <span className="text-[10px] text-gray-600 font-mono mt-1 leading-none">
+                                    <span className="text-[10px] text-gray-600 mt-1 leading-none">
                                       {v.vehicle_number}
                                     </span>
                                   </div>
@@ -228,7 +223,7 @@ export default async function TrainPage({ params }: PageProps) {
                             {/* GROUP ID */}
                             {group.group_id && (
                               <div className="mt-2 pt-1 border-t border-gray-300 w-full text-center px-1">
-                                <span className="text-[10px] text-gray-500 font-bold font-mono whitespace-nowrap block">
+                                <span className="text-[10px] text-gray-500 font-bold whitespace-nowrap block">
                                   {group.group_id}
                                 </span>
                               </div>
@@ -250,49 +245,62 @@ export default async function TrainPage({ params }: PageProps) {
         <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
           <span>🕒</span> {dict.train.timetable}
         </h2>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto bg-white rounded shadow">
           <table className="w-full text-left text-sm">
-            <thead className="bg-gray-100 border-b text-gray-600 uppercase text-xs">
+            <thead className="bg-gray-100 border-b">
               <tr>
                 <th className="p-3">{dict.search.station}</th>
-                <th className="p-3 text-right">{dict.station.arrival}</th>
-                <th className="p-3 text-right">{dict.station.actual}</th>
-                <th className="p-3 text-right">{dict.station.departure}</th>
-                <th className="p-3 text-right">{dict.station.actual}</th>
+                <th className="p-3 text-center">{dict.station.arrival}</th>
+                <th className="p-3 text-center">{dict.station.actual}</th>
+                <th className="p-3 text-center">{dict.station.departure}</th>
+                <th className="p-3 text-center">{dict.station.actual}</th>
                 <th className="p-3 text-center">{dict.station.track}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
               {train.schedule.map((stop, idx) => {
+                // Calculate lateness
+                const isArrivalLate = checkIsLate(stop.arrival, stop.actual_arrival);
+                const isDepartureLate = checkIsLate(stop.departure, stop.actual_departure);
+
                 return (
                   <tr key={idx} className={`hover:bg-blue-50 transition ${stop.commercial_stop === false ? 'text-gray-400' : 'text-gray-900'}`}>
                     <td className="p-3 font-medium">
                       {stop.name}
                     </td>
-                    <td className="p-3 text-right font-mono">
-                      <div className={stop.cancelled_arrival ? 'line-through text-red-500' : ''}>
+                    
+                    {/* Scheduled Arrival */}
+                    <td className="p-3 text-center">
+                      <div className={stop.cancelled_arrival ? 'line-through text-red-600' : ''}>
                         {formatStationTime(stop.arrival, country, lang)}
                       </div>
                     </td>
-                    <td className="p-3 text-right font-mono">
+
+                    {/* Actual Arrival */}
+                    <td className="p-3 text-center">
                       {stop.actual_arrival 
-                          ? <span className={stop.arrival && stop.actual_arrival !== stop.arrival ? 'text-red-600 font-bold' : ''}>
+                          ? <span className={`font-bold ${isArrivalLate ? 'text-red-600' : ''}`}>
                               {formatStationTime(stop.actual_arrival, country, lang)}
                             </span>
                           : '-'}
                     </td>
-                    <td className="p-3 text-right font-mono">
-                       <div className={stop.cancelled_departure ? 'line-through text-red-500' : ''}>
+
+                    {/* Scheduled Departure */}
+                    <td className="p-3 text-center">
+                       <div className={stop.cancelled_departure ? 'line-through text-red-600' : ''}>
                         {formatStationTime(stop.departure, country, lang)}
                       </div>
                     </td>
-                    <td className="p-3 text-right font-mono">
+
+                    {/* Actual Departure */}
+                    <td className="p-3 text-center">
                       {stop.actual_departure 
-                          ? <span className={stop.departure && stop.actual_departure !== stop.departure ? 'text-red-600 font-bold' : ''}>
+                          ? <span className={`font-bold ${isDepartureLate ? 'text-red-600' : ''}`}>
                               {formatStationTime(stop.actual_departure, country, lang)}
                             </span> : '-'}
                     </td>
-                    <td className="p-3 text-center font-bold text-blue-800">{stop.platform || '-'}</td>
+
+                    <td className="p-3 text-center font-bold text-blue-600">{stop.platform || '-'}</td>
                   </tr>
                 );
               })}
