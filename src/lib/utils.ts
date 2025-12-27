@@ -62,6 +62,7 @@ export function formatStationTime(
       hour: '2-digit',
       minute: '2-digit',
       timeZone: timeZone,
+      hour12: false, // Forces 24-hour format (00:00 - 23:59)
     });
   } catch (error) {
     console.error(`Error formatting time for ${country}:`, error);
