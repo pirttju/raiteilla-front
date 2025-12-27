@@ -79,7 +79,7 @@ export default async function StationPage({ params }: PageProps) {
                       href={`/${lang}/train/${country}/${train.departure_date}/${train.train_number}`} 
                       className={`${blueTextClass} font-bold hover:underline`}
                     >
-                      {train.train_type} {train.train_number}
+                      {train.headcode ? train.headcode : train.train_type + ' ' + train.train_number}
                     </Link>
                   </td>
                   <td className="p-3">

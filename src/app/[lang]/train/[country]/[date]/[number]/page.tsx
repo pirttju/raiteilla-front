@@ -62,7 +62,7 @@ export default async function TrainPage({ params }: PageProps) {
             </span>
           )}
           <span>
-            {train.train_type} {train.train_number}
+            {train.headcode ? train.headcode : train.train_type + ' ' + train.train_number}
           </span>
         </div>
         

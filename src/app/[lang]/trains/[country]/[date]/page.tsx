@@ -68,7 +68,7 @@ export default async function TrainsListPage({ params }: PageProps) {
                       href={`/${lang}/train/${country}/${date}/${train.train_number}`}
                       className="text-blue-600 hover:underline block dark:text-blue-400"
                     >
-                      {train.train_type} {train.train_number}
+                      {train.headcode ? train.headcode : train.train_type + ' ' + train.train_number}
                     </Link>
                     <span className="text-xs text-gray-500 dark:text-gray-400">{train.company}</span>
                   </td>
