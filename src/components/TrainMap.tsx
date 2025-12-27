@@ -63,7 +63,7 @@ export default function MapPage() {
       map.current?.resize(); 
       initializeLayers();
       fetchVehicles();
-      intervalRef.current = setInterval(fetchVehicles, 5000);
+      intervalRef.current = setInterval(fetchVehicles, 10000); // 10 seconds
     });
 
     map.current.on('moveend', fetchVehicles);
