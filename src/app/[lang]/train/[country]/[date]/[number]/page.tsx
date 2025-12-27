@@ -30,9 +30,7 @@ export default async function TrainPage({ params }: PageProps) {
   const getStationName = (code: string) => stationNameMap.get(code) || code;
 
   const firstStop = train.schedule[0];
-  const startTimeStr = firstStop.actual_departure || firstStop.departure;
-  
-  const startTime = formatStationTime(startTimeStr, country, lang);
+  const startTime = formatStationTime(firstStop.departure, country, lang);
 
   const lineColors = lineColoursData as Record<string, Record<string, string>>;
   let lineBgColor = '#404040';
