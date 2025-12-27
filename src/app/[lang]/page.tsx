@@ -10,10 +10,10 @@ export default async function Home({
   const dict = await getDictionary(lang);
   
   return (
-    <div className="flex flex-col items-center justify-center h-[80vh] px-4">
+    <div className="flex flex-col items-center justify-center h-[80vh] px-4 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
       <h1 className="text-4xl font-bold mb-8 text-blue-900">Raiteilla</h1>
       <SearchBox lang={lang} />
-      <p className="mt-4 text-gray-600">{dict.search.placeholder}</p>
+      <p className="mt-4">{dict.search.placeholder}</p>
     </div>
   );
 }

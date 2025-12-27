@@ -20,7 +20,7 @@ export default async function RootLayout({
 
   return (
     <html lang={lang}>
-      <body className="bg-gray-50 text-gray-900 min-h-screen">
+      <body className="min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
         <Header dict={dict} lang={lang} />
         <main>{children}</main>
       </body>

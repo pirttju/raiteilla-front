@@ -20,7 +20,7 @@ export default async function TrainPage({ params }: PageProps) {
   const train = await getTrainDetails(country as any, date, number);
   const compositions = await getTrainComposition(country as any, date, number);
 
-  if (!train) return <div className="p-8">{dict.search.trainNotFound || "Train not found"}</div>;
+  if (!train) return <div className="p-8 dark:text-gray-100">{dict.search.trainNotFound || "Train not found"}</div>;
 
   const stationNameMap = new Map<string, string>();
   train.schedule.forEach((stop) => {
@@ -32,25 +32,27 @@ export default async function TrainPage({ params }: PageProps) {
   const firstStop = train.schedule[0];
   const startTimeStr = firstStop.actual_departure || firstStop.departure;
   
-  // Update: Use the utility for the Header time
   const startTime = formatStationTime(startTimeStr, country, lang);
 
-  // Line Color Logic
   const lineColors = lineColoursData as Record<string, Record<string, string>>;
   let lineBgColor = '#404040';
   if (train.line_no && lineColors[country] && lineColors[country][train.line_no]) {
     lineBgColor = `#${lineColors[country][train.line_no]}`;
   }
 
+  // Reusable classes for dark mode consistency
+  const redText = "text-red-600 dark:text-red-400";
+  const blueText = "text-blue-600 dark:text-blue-400";
+
   return (
-    <div className="w-full p-4">
+    <div className="w-full p-4 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
       {/* Header */}
-      <div className="bg-white rounded shadow p-6 mb-6 border-l-4 border-blue-600">
-        <h1 className="text-3xl font-bold mb-2 text-gray-900">
+      <div className="bg-white rounded shadow p-6 mb-6 border-l-4 border-blue-600 dark:bg-gray-800 dark:border-blue-500">
+        <h1 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">
           {startTime} {train.origin_name}&ndash;{train.destination_name}
         </h1>
         
-        <div className="text-xl font-semibold text-blue-800 mb-1 flex items-center gap-2">
+        <div className="text-xl font-semibold text-blue-800 mb-1 flex items-center gap-2 dark:text-blue-300">
           {train.line_no && (
             <span 
               className="inline-flex items-center justify-center px-2 py-0.5 rounded text-white font-bold shadow-sm text-lg min-w-[40px]"
@@ -64,14 +66,14 @@ export default async function TrainPage({ params }: PageProps) {
           </span>
         </div>
         
-        <div className="text-sm text-gray-500 tracking-wide">
+        <div className="text-sm text-gray-500 tracking-wide dark:text-gray-400">
           {train.company} • {new Date(date).toLocaleDateString(lang)}
         </div>
       </div>
 
-      {/* COMPOSITIONS */}
+      {/* Compositions */}
       {compositions && compositions.length > 0 && (
-        <div className="bg-white rounded shadow p-6 mb-6">
+        <div className="bg-white rounded shadow p-6 mb-6 dark:bg-gray-800">
           <h2 className="text-xl font-bold mb-6 flex items-center gap-2">
             <span>🚆</span> {dict.train.composition}
           </h2>
@@ -83,11 +85,11 @@ export default async function TrainPage({ params }: PageProps) {
               return (
                 <div key={idx} className="relative">
                   {/* Leg Header */}
-                  <div className="mb-4 pb-2 border-b flex justify-between items-end">
-                    <h3 className="font-bold text-lg text-blue-900">
+                  <div className="mb-4 pb-2 border-b flex justify-between items-end dark:border-gray-700">
+                    <h3 className="font-bold text-lg text-blue-900 dark:text-blue-300">
                       {getStationName(comp.begin_station_short_code)}&ndash;{getStationName(comp.end_station_short_code)}
                     </h3>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-gray-500 dark:text-gray-400">
                       {comp.maximum_speed} km/h • {comp.total_length} m
                     </div>
                   </div>
@@ -96,8 +98,8 @@ export default async function TrainPage({ params }: PageProps) {
                   <div className="overflow-x-auto pb-2">
                     <div className="flex items-end min-w-max px-2 justify-start py-2">
                       
-                      {/* DIRECTION ARROW (Left) */}
-                      <div className="flex flex-col items-center justify-center mb-4 opacity-50">
+                      {/* Direction Arrow (Left) */}
+                      <div className="flex flex-col items-center justify-center mb-4 opacity-50 text-gray-400 dark:text-gray-500">
                         <svg 
                           xmlns="http://www.w3.org/2000/svg" 
                           width="24" height="24" 
@@ -107,7 +109,6 @@ export default async function TrainPage({ params }: PageProps) {
                           strokeWidth="2" 
                           strokeLinecap="round" 
                           strokeLinejoin="round"
-                          className="text-gray-400"
                         >
                           <path d="m12 19-7-7 7-7"/>
                           <path d="M19 12H5"/>
@@ -174,7 +175,8 @@ export default async function TrainPage({ params }: PageProps) {
                                         width={64}
                                         height={32}
                                         priority
-                                        className="object-contain z-10" 
+                                        // The dark:invert works with SVGs that are black line art
+                                        className="object-contain z-10 dark:invert" 
                                         style={{ width: '64px', height: '32px', objectFit: 'contain' }}
                                       />
 
@@ -212,7 +214,7 @@ export default async function TrainPage({ params }: PageProps) {
                                       )}
                                     </div>
 
-                                    <span className="text-[10px] text-gray-600 mt-1 leading-none">
+                                    <span className="text-[10px] text-gray-600 mt-1 leading-none dark:text-gray-400">
                                       {v.vehicle_number}
                                     </span>
                                   </div>
@@ -220,10 +222,10 @@ export default async function TrainPage({ params }: PageProps) {
                               })}
                             </div>
 
-                            {/* GROUP ID */}
+                            {/* Group Number */}
                             {group.group_id && (
-                              <div className="mt-2 pt-1 border-t border-gray-300 w-full text-center px-1">
-                                <span className="text-[10px] text-gray-500 font-bold whitespace-nowrap block">
+                              <div className="mt-2 pt-1 border-t border-gray-300 w-full text-center px-1 dark:border-gray-600">
+                                <span className="text-xs text-gray-500 font-bold whitespace-nowrap block dark:text-gray-400">
                                   {group.group_id}
                                 </span>
                               </div>
@@ -240,14 +242,14 @@ export default async function TrainPage({ params }: PageProps) {
         </div>
       )}
 
-      {/* SCHEDULE */}
-      <div className="bg-white rounded shadow p-6 mb-6">
+      {/* Schedule */}
+      <div className="bg-white rounded shadow p-6 mb-6 dark:bg-gray-800">
         <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
           <span>🕒</span> {dict.train.timetable}
         </h2>
-        <div className="overflow-x-auto bg-white rounded shadow">
+        <div className="overflow-x-auto bg-white rounded shadow dark:bg-gray-800 dark:shadow-none">
           <table className="w-full text-left text-sm">
-            <thead className="bg-gray-100 border-b">
+            <thead className="bg-gray-100 border-b dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200">
               <tr>
                 <th className="p-3">{dict.search.station}</th>
                 <th className="p-3 text-center">{dict.station.arrival}</th>
@@ -257,21 +259,25 @@ export default async function TrainPage({ params }: PageProps) {
                 <th className="p-3 text-center">{dict.station.track}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
               {train.schedule.map((stop, idx) => {
-                // Calculate lateness
                 const isArrivalLate = checkIsLate(stop.arrival, stop.actual_arrival);
                 const isDepartureLate = checkIsLate(stop.departure, stop.actual_departure);
+                
+                // Determine row text color based on commercial status
+                const baseTextColor = stop.commercial_stop === false 
+                  ? 'text-gray-400 dark:text-gray-500' 
+                  : 'text-gray-900 dark:text-gray-200';
 
                 return (
-                  <tr key={idx} className={`hover:bg-blue-50 transition ${stop.commercial_stop === false ? 'text-gray-400' : 'text-gray-900'}`}>
+                  <tr key={idx} className={`hover:bg-blue-50 transition dark:hover:bg-blue-900/20 ${baseTextColor}`}>
                     <td className="p-3 font-medium">
                       {stop.name}
                     </td>
                     
                     {/* Scheduled Arrival */}
                     <td className="p-3 text-center">
-                      <div className={stop.cancelled_arrival ? 'line-through text-red-600' : ''}>
+                      <div className={stop.cancelled_arrival ? `line-through ${redText}` : ''}>
                         {formatStationTime(stop.arrival, country, lang)}
                       </div>
                     </td>
@@ -279,7 +285,7 @@ export default async function TrainPage({ params }: PageProps) {
                     {/* Actual Arrival */}
                     <td className="p-3 text-center">
                       {stop.actual_arrival 
-                          ? <span className={`font-bold ${isArrivalLate ? 'text-red-600' : ''}`}>
+                          ? <span className={`font-bold ${isArrivalLate ? redText : ''}`}>
                               {formatStationTime(stop.actual_arrival, country, lang)}
                             </span>
                           : '-'}
@@ -287,7 +293,7 @@ export default async function TrainPage({ params }: PageProps) {
 
                     {/* Scheduled Departure */}
                     <td className="p-3 text-center">
-                       <div className={stop.cancelled_departure ? 'line-through text-red-600' : ''}>
+                       <div className={stop.cancelled_departure ? `line-through ${redText}` : ''}>
                         {formatStationTime(stop.departure, country, lang)}
                       </div>
                     </td>
@@ -295,12 +301,14 @@ export default async function TrainPage({ params }: PageProps) {
                     {/* Actual Departure */}
                     <td className="p-3 text-center">
                       {stop.actual_departure 
-                          ? <span className={`font-bold ${isDepartureLate ? 'text-red-600' : ''}`}>
+                          ? <span className={`font-bold ${isDepartureLate ? redText : ''}`}>
                               {formatStationTime(stop.actual_departure, country, lang)}
                             </span> : '-'}
                     </td>
 
-                    <td className="p-3 text-center font-bold text-blue-600">{stop.platform || '-'}</td>
+                    <td className={`p-3 text-center font-bold ${blueText}`}>
+                      {stop.platform || '-'}
+                    </td>
                   </tr>
                 );
               })}

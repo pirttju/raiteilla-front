@@ -13,7 +13,7 @@ export default async function About({ params }: PageProps) {
   const dict = await getDictionary(lang);
 
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)] bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
+    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
       
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start text-center sm:text-left">
         <h1 className="text-4xl font-bold tracking-tight">
