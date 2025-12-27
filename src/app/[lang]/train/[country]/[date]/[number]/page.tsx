@@ -214,7 +214,7 @@ export default async function TrainPage({ params }: PageProps) {
                                       )}
                                     </div>
 
-                                    <span className="text-[10px] text-gray-600 mt-1 leading-none dark:text-gray-400">
+                                    <span className="text-xs text-gray-600 mt-1 leading-none dark:text-gray-400">
                                       {v.vehicle_number}
                                     </span>
                                   </div>
