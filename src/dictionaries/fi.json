@@ -38,5 +38,13 @@
   "about": {
     "title": "Liikennetietojen lähde",
     "license": "lisenssi"
+  },
+  "map": {
+    "title": "Live-kartta",
+    "train": "Juna",
+    "dataFetched": "Karttatiedot noudettu",
+    "speed": "Nopeus",
+    "bearing": "Suunta",
+    "lastUpdated": "Viimeksi päivitetty"
   }
 }

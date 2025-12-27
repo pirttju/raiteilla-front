@@ -38,5 +38,13 @@
   "about": {
     "title": "Sources of information",
     "license": "licensed under"
+  },
+  "map": {
+    "title": "Live Map",
+    "train": "Train",
+    "dataFetched": "Map data fetched",
+    "speed": "Speed",
+    "bearing": "Bearing",
+    "lastUpdated": "Last updated"
   }
 }

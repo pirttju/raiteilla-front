@@ -13,7 +13,11 @@ interface VehicleProperties {
   lon: number;
 }
 
-export default function MapPage() {
+interface MapPageProps {
+  dict: any;
+}
+
+export default function MapPage({ dict }: MapPageProps) {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -84,11 +88,11 @@ export default function MapPage() {
             <strong class="text-base">${props.ro}</strong>
           </div>
           <div class="space-y-1 mb-2">
-              <div>Speed: ${props.sp ?? 0} km/h</div>
-              <div>Bearing: ${props.be ?? 0}°</div>
+              <div>${dict.map.speed}: ${props.sp ?? 0} km/h</div>
+              <div>${dict.map.bearing}: ${props.be ?? 0}°</div>
           </div>
           <div class="pt-2 border-t ${isDarkMode ? 'border-gray-600 text-gray-400' : 'border-gray-200 text-gray-500'} text-xs">
-              <strong>Last updated:</strong> ${lastUpdatedStr}
+              <strong>${dict.map.lastUpdated}:</strong> ${lastUpdatedStr}
           </div>
         </div>
       `;
@@ -236,13 +240,13 @@ export default function MapPage() {
         style={{ height: 'calc(100vh - 64px)', width: '100%' }}
       >
         <div className="absolute top-4 left-4 bg-white dark:bg-gray-800 p-3 rounded shadow-lg z-10 text-sm opacity-90 border dark:border-gray-700 pointer-events-none backdrop-blur-sm">
-          <h3 className="font-bold mb-1 text-gray-900 dark:text-gray-100">Live Map</h3>
+          <h3 className="font-bold mb-1 text-gray-900 dark:text-gray-100">{dict.map.title}</h3>
           <div className="flex items-center gap-2 mb-2 text-gray-800 dark:text-gray-200">
             <div className="w-3 h-3 rounded-full bg-red-500 border border-white dark:border-gray-800"></div>
-            <span>Train</span>
+            <span>{dict.map.train}</span>
           </div>
           <p className="text-xs text-gray-500 dark:text-gray-400">
-            Map data fetched: {lastFetchTime}
+            {dict.map.dataFetched}: {lastFetchTime}
           </p>
         </div>
       </div>

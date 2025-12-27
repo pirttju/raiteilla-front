@@ -38,5 +38,13 @@
   "about": {
     "title": "Ursprungliga datakällor",
     "license": "licens"
+  },
+  "map": {
+    "title": "Livekarta",
+    "train": "Tåg",
+    "dataFetched": "Kartdata hämtad",
+    "speed": "Hastighet",
+    "bearing": "Riktning",
+    "lastUpdated": "Senast uppdaterad"
   }
 }

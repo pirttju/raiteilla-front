@@ -38,5 +38,13 @@
   "about": {
     "title": "Originale datakilder",
     "license": "lisens"
+  },
+  "map": {
+    "title": "Livekart",
+    "train": "Tog",
+    "dataFetched": "Kartdata hentet",
+    "speed": "Hastighet",
+    "bearing": "Retning",
+    "lastUpdated": "Sist oppdatert"
   }
 }
