@@ -107,3 +107,9 @@ export interface MapVehicleFeature {
     fe: string; // Feed (country)
   };
 }
+
+export interface HealthStatus {
+  item: string;
+  threshold: number;
+  seconds: number;
+}

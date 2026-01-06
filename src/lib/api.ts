@@ -1,4 +1,4 @@
-import { CountryCode, Station, StationTrain, Train, TrainComposition, TrainStop } from "@/types/api";
+import { CountryCode, HealthStatus, Station, StationTrain, Train, TrainComposition, TrainStop } from "@/types/api";
 
 const BASE_URL = "https://raiteilla.fi/api/v1";
 
@@ -17,7 +17,7 @@ export async function findStations(name: string): Promise<Station[]> {
   return json.success ? json.data : [];
 }
 
-export async function getStations(country: CountryCode = 'fi'): Promise<Station[]> {
+export async function getStations(country: CountryCode): Promise<Station[]> {
   const res = await fetch(`${BASE_URL}/stations/${country}`, { next: { revalidate: 3600 } });
   const json = await res.json();
   return json.success ? json.data : [];
@@ -50,6 +50,12 @@ export async function getTrainComposition(country: CountryCode, date: string, nu
 
 export async function getStationSchedule(country: CountryCode, station: string, date: string): Promise<StationTrain[]> {
   const res = await fetch(`${BASE_URL}/stations/${country}/${station}/${date}`, { cache: 'no-store' });
+  const json = await res.json();
+  return json.success ? json.data : [];
+}
+
+export async function getHealthStatus(country: CountryCode): Promise<HealthStatus[]> {
+  const res = await fetch(`${BASE_URL}/health/${country}`, { cache: 'no-store' });
   const json = await res.json();
   return json.success ? json.data : [];
 }
