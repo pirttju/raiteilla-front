@@ -50,10 +50,11 @@ export default async function About({ params }: PageProps) {
   const dict = await getDictionary(lang);
 
   // Fetch health status
-  const [fiHealth, seHealth, noHealth] = await Promise.all([
+  const [fiHealth, seHealth, noHealth, gbHealth] = await Promise.all([
     getHealthStatus('fi'),
     getHealthStatus('se'),
     getHealthStatus('no'),
+    getHealthStatus('gb'),
   ]);
 
   return (
@@ -97,6 +98,7 @@ export default async function About({ params }: PageProps) {
             <span className="p-2">{getFlag("gb")}</span>
             <Link href="https://www.networkrail.co.uk/">Network Rail Limited</Link>, {dict.about.license} <Link href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">OGL3</Link>
           </p>
+          <StatusList items={gbHealth} />
         </div>
       </main>
       
