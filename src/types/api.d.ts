@@ -35,11 +35,14 @@ export interface StationTrain {
   estimated_arrival: string | null;
   actual_arrival: string | null;
   cancelled_arrival: boolean | null;
+  unknown_arrival: boolean | null;
   departure: string | null;
   estimated_departure: string | null;
   actual_departure: string | null;
   cancelled_departure: boolean | null;
+  unknown_departure: boolean | null;
   platform: string | null;
+  stop_sector: string | null;
 }
 
 export interface Train {
@@ -63,11 +66,14 @@ export interface TrainStop {
   estimated_arrival: string | null;
   actual_arrival: string | null;
   cancelled_arrival: boolean | null;
+  unknown_arrival: boolean | null;
   departure: string | null;
   estimated_departure: string | null;
   actual_departure: string | null;
   cancelled_departure: boolean | null;
+  unknown_departure: boolean | null;
   platform: string | null;
+  stop_sector: string | null;
   commercial_stop: boolean;
   coordinates: [number, number];
 }

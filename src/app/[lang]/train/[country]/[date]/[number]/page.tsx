@@ -282,11 +282,19 @@ export default async function TrainPage({ params }: PageProps) {
 
                     {/* Actual Arrival */}
                     <td className="p-3 text-center">
-                      {stop.actual_arrival 
-                          ? <span className={`font-bold ${isArrivalLate ? redText : ''}`}>
-                              {formatStationTime(stop.actual_arrival, country, lang)}
-                            </span>
-                          : '-'}
+                      {stop.actual_arrival ? (
+                        <span className={`font-bold ${isArrivalLate ? redText : ''}`}>
+                          {formatStationTime(stop.actual_arrival, country, lang)}
+                        </span>
+                      ) : stop.unknown_arrival ? (
+                        <span className={`font-bold ${redText}`}>?</span>
+                      ) : stop.estimated_arrival ? (
+                      <span className="italic">
+                        ~{formatStationTime(stop.estimated_arrival, country, lang)}
+                      </span>
+                    ) : (
+                        '-'
+                      )}
                     </td>
 
                     {/* Scheduled Departure */}
@@ -298,10 +306,19 @@ export default async function TrainPage({ params }: PageProps) {
 
                     {/* Actual Departure */}
                     <td className="p-3 text-center">
-                      {stop.actual_departure 
-                          ? <span className={`font-bold ${isDepartureLate ? redText : ''}`}>
-                              {formatStationTime(stop.actual_departure, country, lang)}
-                            </span> : '-'}
+                      {stop.actual_departure ? (
+                        <span className={`font-bold ${isDepartureLate ? redText : ''}`}>
+                          {formatStationTime(stop.actual_departure, country, lang)}
+                        </span>
+                      ) : stop.unknown_departure ? (
+                        <span className={`font-bold ${redText}`}>?</span>
+                      ) : stop.estimated_departure ? (
+                      <span className="italic">
+                        ~{formatStationTime(stop.estimated_departure, country, lang)}
+                      </span>
+                      ) : (
+                        '-'
+                      )}
                     </td>
 
                     <td className={`p-3 text-center font-bold ${blueText}`}>

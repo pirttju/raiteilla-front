@@ -67,8 +67,20 @@ export default async function StationPage({ params }: PageProps) {
                   </td>
                   
                   {/* Actual Arrival */}
-                  <td className={`p-3 text-center font-bold ${isArrivalLate ? redTextClass : ''}`}>
-                    {formatStationTime(train.actual_arrival, country, lang)}
+                  <td className="p-3 text-center">
+                    {train.actual_arrival ? (
+                      <span className={`font-bold ${isArrivalLate ? redTextClass : ''}`}>
+                        {formatStationTime(train.actual_arrival, country, lang)}
+                      </span>
+                    ) : train.unknown_arrival ? (
+                      <span className={`font-bold ${redTextClass}`}>?</span>
+                    ) : train.estimated_arrival ? (
+                      <span className="italic">
+                        ~{formatStationTime(train.estimated_arrival, country, lang)}
+                      </span>
+                    ) : (
+                      '-'
+                    )}
                   </td>
 
                   {/* Scheduled Departure */}
@@ -79,8 +91,20 @@ export default async function StationPage({ params }: PageProps) {
                   </td>
 
                   {/* Actual Departure */}
-                  <td className={`p-3 text-center font-bold ${isDepartureLate ? redTextClass : ''}`}>
-                    {formatStationTime(train.actual_departure, country, lang)}
+                  <td className="p-3 text-center">
+                    {train.actual_departure ? (
+                      <span className={`font-bold ${isDepartureLate ? redTextClass : ''}`}>
+                        {formatStationTime(train.actual_departure, country, lang)}
+                      </span>
+                    ) : train.unknown_departure ? (
+                      <span className={`font-bold ${redTextClass}`}>?</span>
+                    ) : train.estimated_departure ? (
+                      <span className="italic">
+                        ~{formatStationTime(train.estimated_departure, country, lang)}
+                      </span>
+                    ) : (
+                      '-'
+                    )}
                   </td>
 
                   <td className="p-3">
