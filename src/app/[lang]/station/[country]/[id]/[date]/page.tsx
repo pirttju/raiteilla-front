@@ -2,6 +2,7 @@ import { getStationSchedule, getStationInfo } from '@/lib/api';
 import { getDictionary } from '@/lib/dictionary';
 import { formatStationTime, checkIsLate } from '@/lib/utils';
 import Link from 'next/link';
+import lineColoursData from '@/lib/line_colours.json';
 
 interface PageProps {
   params: Promise<{
@@ -18,6 +19,8 @@ export default async function StationPage({ params }: PageProps) {
   const dict = await getDictionary(lang);
   const schedule = await getStationSchedule(country as any, id, date);
   const info = await getStationInfo(country as any, id);
+  const lineColors = lineColoursData as Record<string, Record<string, string>>;
+  let lineBgColor = '#404040';
 
   return (
     <div className="container mx-auto p-4 bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
@@ -40,6 +43,12 @@ export default async function StationPage({ params }: PageProps) {
             {schedule.map((train, idx) => {
               const isArrivalLate = checkIsLate(train.arrival, train.actual_arrival);
               const isDepartureLate = checkIsLate(train.departure, train.actual_departure);
+
+              if (train.line_no && lineColors[country] && lineColors[country][train.line_no]) {
+                lineBgColor = `#${lineColors[country][train.line_no]}`;
+              } else {
+                lineBgColor = '#404040';
+              }
 
               // Standardized color classes for reuse and readability
               const redTextClass = 'text-red-600 dark:text-red-400'; 
@@ -83,7 +92,14 @@ export default async function StationPage({ params }: PageProps) {
                     </Link>
                   </td>
                   <td className="p-3">
-                    {train.origin_name}&ndash;{train.destination_name}
+                    {train.line_no && (
+                      <span 
+                        className="inline-flex items-center justify-center px-2 py-0.5 rounded text-white font-bold shadow-sm text-xs min-w-[20px]"
+                        style={{ backgroundColor: lineBgColor }}
+                      >
+                        {train.line_no}
+                      </span>
+                    )} {train.origin_name}&ndash;{train.destination_name}
                   </td>
                   <td className={`p-3 text-center font-bold ${blueTextClass}`}>
                     {train.platform || '-'}
