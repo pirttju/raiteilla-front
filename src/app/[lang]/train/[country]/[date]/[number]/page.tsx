@@ -64,9 +64,19 @@ export default async function TrainPage({ params }: PageProps) {
           </span>
         </div>
         
-        <div className="text-sm text-gray-500 tracking-wide dark:text-gray-400">
+        <div className="text-sm text-gray-500 mb-1 tracking-wide dark:text-gray-400">
           {train.company} • {new Date(date).toLocaleDateString(lang)}
         </div>
+
+        {train.cancelled && (
+          <div className="text-sm text-gray-500 mb-1 tracking-wide dark:text-gray-400">
+            <span 
+              className="inline-flex items-center justify-center px-2 py-0.5 rounded bg-red-600 text-white shadow-sm text-sm min-w-[64px]"
+            >
+              {dict.train.cancelled}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Compositions */}
