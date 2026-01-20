@@ -69,3 +69,23 @@ export function formatStationTime(
     return '-';
   }
 }
+
+/**
+ * Returns YYYY-MM-DD string for a specific country's timezone
+ * given a day offset from "now".
+ */
+export function getDateInZone(countryCode: string, dayOffset: number = 0): string {
+  const timeZone = COUNTRY_TIMEZONES[countryCode.toLowerCase()] || COUNTRY_TIMEZONES.default;
+  
+  const date = new Date();
+  // Adjust date by offset
+  date.setDate(date.getDate() + dayOffset);
+
+  // Format to YYYY-MM-DD in the specific timezone
+  return new Intl.DateTimeFormat('en-CA', {
+    timeZone,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(date);
+}

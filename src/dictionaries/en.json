@@ -33,7 +33,9 @@
   "common": {
     "date": "Date",
     "prevDay": "Previous day",
-    "nextDay": "Next day"
+    "nextDay": "Next day",
+    "loading": "Loading data...",
+    "noData": "No data"
   },
   "about": {
     "title": "Sources of information",

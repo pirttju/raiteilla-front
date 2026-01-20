@@ -33,7 +33,9 @@
   "common": {
     "date": "Dato",
     "prevDay": "Forrige dag",
-    "nextDay": "Neste dag"
+    "nextDay": "Neste dag",
+    "loading": "Laster inn data...",
+    "noData": "Ingenting å vise"
   },
   "about": {
     "title": "Originale datakilder",

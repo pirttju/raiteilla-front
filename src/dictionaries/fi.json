@@ -19,7 +19,7 @@
     "departure": "Lähtö",
     "track": "Raide",
     "time": "Aika",
-    "actual": "Toteuma"
+    "actual": "Todellinen"
   },
   "train": {
     "details": "Juna {type} {number}",
@@ -33,7 +33,9 @@
   "common": {
     "date": "Päivämäärä",
     "prevDay": "Edellinen päivä",
-    "nextDay": "Seuraava päivä"
+    "nextDay": "Seuraava päivä",
+    "loading": "Ladataan...",
+    "noData": "Ei tietoja"
   },
   "about": {
     "title": "Liikennetietojen lähde",

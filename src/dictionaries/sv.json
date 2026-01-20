@@ -33,7 +33,9 @@
   "common": {
     "date": "Datum",
     "prevDay": "Föregående dag",
-    "nextDay": "Nästa dag"
+    "nextDay": "Nästa dag",
+    "loading": "Laddar data...",
+    "noData": "Inget att visa"
   },
   "about": {
     "title": "Ursprungliga datakällor",
